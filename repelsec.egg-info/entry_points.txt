@@ -1,0 +1,2 @@
+[console_scripts]
+repelsec = repelsec.main:main
