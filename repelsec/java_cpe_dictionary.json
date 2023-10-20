@@ -1,0 +1,13 @@
+{
+  "spring-boot-starter-web": "cpe:2.3:a:vmware:spring_framework:*:*:*:*:*:*:*:*",
+  "spring-boot-starter-data-jpa": null,
+  "spring-boot-starter-security": "cpe:2.3:a:vmware:spring_security:*:*:*:*:*:*:*:*",
+  "spring-boot-starter-websocket": null,
+  "spring-boot-starter-validation": null,
+  "commons-io": "cpe:2.3:a:apache:commons_io:*:-:*:*:*:*:*:*",
+  "commons-collections4": "cpe:2.3:a:apache:commons_collections:*:*:*:*:*:*:*:*",
+  "encoder": null,
+  "esapi": "cpe:2.3:a:owasp:enterprise_security_api:*:*:*:*:*:*:*:*",
+  "dozer": "cpe:2.3:a:dozer_project:dozer:*:*:*:*:*:*:*:*",
+  "jackson-dataformat-xml": "cpe:2.3:a:fasterxml:jackson-dataformat-xml:*:*:*:*:*:*:*:*"
+}
