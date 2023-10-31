@@ -17,8 +17,9 @@ def is_valid_file(parser, arg):
         return arg
 
 
-# Function to find correct version string for dependency - IN PROGRESS
+# Function to find correct version string for dependency
 def find_version(version, springboot_version, properties_dict):
+    # Find correct area of pom.xml to read from
     if version is None:
         version_found = springboot_version
     elif version.startswith("$"):
@@ -26,6 +27,10 @@ def find_version(version, springboot_version, properties_dict):
         version_found = properties_dict.get(property_version)
     else:
         version_found = version
+
+    # Remove all characters except "." and [0-9]
+    version_found = re.sub(r"[a-z\W]", "", str(version_found), flags=re.I)
+    version_found = ".".join(version_found[i:i + 1] for i in range(0, len(version_found), 1))
 
     return version_found
 
@@ -66,10 +71,6 @@ def main():
             group = dependency.get("groupId")
             artifact_version = dependency.get("version")
             version = find_version(artifact_version, spring_version, properties)
-
-            # DEBUG
-
-            pass
 
             cpe = cpe_dict.get(artifact)
 
