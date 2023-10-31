@@ -29,8 +29,10 @@ def find_version(version, springboot_version, properties_dict):
         version_found = version
 
     # Remove all characters except "." and [0-9]
-    version_found = re.sub(r"[a-z\W]", "", str(version_found), flags=re.I)
-    version_found = ".".join(version_found[i:i + 1] for i in range(0, len(version_found), 1))
+    version_found = re.sub(r"[^0-9.]", "", str(version_found))
+
+    if version_found.endswith("."):
+        version_found = version_found[:-1]
 
     return version_found
 
@@ -110,5 +112,13 @@ def main():
                     # print(sca_temp_dict)
                     sca_dict_list.append(sca_temp_dict)
 
-                    df = pd.DataFrame.from_records(sca_dict_list)
-                    df.to_csv("repelsec/sca.csv", index=False)
+                    if args.csv:
+                        df = pd.DataFrame.from_records(sca_dict_list)
+                        df.to_csv("repelsec/sca.csv", index=False)
+
+    # SAST Scan
+    elif ".java" in args.filename:
+
+        # Check for hardcoded passwords/api keys etc...
+
+        pass
