@@ -120,5 +120,4 @@ def main():
     elif ".java" in args.filename:
 
         # Check for hardcoded passwords/api keys etc...
-
         pass
