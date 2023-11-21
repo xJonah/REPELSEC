@@ -119,5 +119,6 @@ def main():
     # SAST Scan
     elif ".java" in args.filename:
 
-        # Check for hardcoded passwords/api keys etc...
+        # file.scan_hard_coded_password()
+        # file.
         pass

@@ -1,0 +1,2 @@
+Verademo - https://github.com/veracode/verademo
+Juvulna - https://github.com/edu-secmachine/javulna/tree/master
