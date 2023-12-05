@@ -8,6 +8,8 @@ import pandas as pd
 from datetime import datetime
 import re
 
+from repelsec import cwe_dictionary
+
 
 # Function to check if path/file exists
 def is_valid_file(parser, arg):
@@ -47,12 +49,13 @@ def main():
 
     args: Namespace = parser.parse_args()
 
-    # Open supplied file
-    with open(args.filename, "r") as f:
-        file = f.read()
-
     # SCA scan
     if "pom.xml" in args.filename:
+
+        # Open supplied file
+        with open(args.filename, "r") as f:
+            file = f.read()
+
         pom_dict = xmltodict.parse(file)
 
         parent = pom_dict["project"]["parent"]
@@ -118,7 +121,31 @@ def main():
 
     # SAST Scan
     elif ".java" in args.filename:
+        # Open supplied file
+        with open(args.filename, "r") as f:
+            lines = f.readlines()
+            line_number = 0
+            sast_dict_list = []
 
-        # file.scan_hard_coded_password()
-        # file.
-        pass
+            # CWE Vulnerability Objects
+            cwe89_object = cwe_dictionary.CWE89()
+            cwe259_object = cwe_dictionary.CWE259()
+
+            for line in lines:
+                line_number += 1
+
+                # CWE 89 Test
+                cwe89_test = cwe89_object.scan(line)
+                if cwe89_test is True:
+                    vulnerability_dict = cwe89_object.__dict__
+                    vulnerability_dict |= {"line_number": line_number}
+                    sast_dict_list.append(vulnerability_dict)
+
+                # CWE 259 Test
+                cwe259_test = cwe259_object.scan(line)
+                if cwe259_test is True:
+                    vulnerability_dict = cwe259_object.__dict__
+                    vulnerability_dict |= {"line_number": line_number}
+                    sast_dict_list.append(vulnerability_dict)
+
+        print(sast_dict_list)
