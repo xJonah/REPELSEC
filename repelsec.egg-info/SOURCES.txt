@@ -2,6 +2,8 @@ LICENSE
 README.md
 setup.py
 repelsec/__init__.py
+repelsec/cwe_vulnerabilities.py
+repelsec/functions.py
 repelsec/main.py
 repelsec.egg-info/PKG-INFO
 repelsec.egg-info/SOURCES.txt

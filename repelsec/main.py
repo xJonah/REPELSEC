@@ -56,6 +56,9 @@ def main():
         with open("repelsec/config/config.txt", "r") as f:
             nvd_key = f.readline()
 
+        # Define loop counter
+        vulnerability_number = 0
+
         # Iterates through pom.xml dependencies
         for dependency in dependencies:
 
@@ -74,16 +77,13 @@ def main():
                 formatted_cpe = cpe.replace("*", version, 1)
 
                 # Search NVD database for CVEs assigned to the CPE
-                cve_list = nvdlib.searchCVE(cpeName=formatted_cpe, limit=100,
-                                            key="0714105d-f688-4d3c-a28b-153d23ede07b")
-
-                # Define loop counter
-                vulnerability_number = 0
+                cve_list = nvdlib.searchCVE(cpeName=formatted_cpe, limit=100)
 
                 # Extract and define desired scan & CVE attributes
                 for cve in cve_list:
                     cve_id = cve.id
-                    description = re.sub(r"^$\n", "", cve.descriptions[0].value, flags=re.MULTILINE)
+                    description_array = cve.descriptions[0].value.split()
+                    description = " ".join(description_array)
                     severity = cve.score[2]
                     cvss_score = cve.score[1]
                     remediation_action = "Upgrade dependency, implement mitigation, or use secure alternative"
