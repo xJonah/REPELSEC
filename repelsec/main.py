@@ -1,92 +1,89 @@
 # Imports
+import os
+import re
 from argparse import ArgumentParser, Namespace
-import os.path
 import nvdlib
 import xmltodict
 import json
 import pandas as pd
 from datetime import datetime
-import re
-
-from repelsec import cwe_dictionary
-
-
-# Function to check if path/file exists
-def is_valid_file(parser, arg):
-    if not os.path.exists(arg):
-        parser.error(f"The file {arg} does not exist")
-    else:
-        return arg
-
-
-# Function to find correct version string for dependency
-def find_version(version, springboot_version, properties_dict):
-    # Find correct area of pom.xml to read from
-    if version is None:
-        version_found = springboot_version
-    elif version.startswith("$"):
-        property_version = version[version.find("{") + 1:version.find("}")]
-        version_found = properties_dict.get(property_version)
-    else:
-        version_found = version
-
-    # Remove all characters except "." and [0-9]
-    version_found = re.sub(r"[^0-9.]", "", str(version_found))
-
-    if version_found.endswith("."):
-        version_found = version_found[:-1]
-
-    return version_found
+from repelsec import functions as sec
 
 
 def main():
+    # Instantiate argument parser object
     parser = ArgumentParser()
 
-    # CLI Arguments
-    parser.add_argument("filename", help="Scans a given file", type=lambda x: is_valid_file(parser, x))
+    # Define CLI Arguments
+    parser.add_argument("filename", help="Scans a given file", type=lambda x: sec.is_valid_path(parser, x))
     parser.add_argument("-c", "--csv", help="Export results to a csv file", action="store_true")
     parser.add_argument("-p", "--pdf", help="Export results to a pdf file", action="store_true")
+    parser.add_argument("-t", "--txt", help="Export results to a txt file", action="store_true")
+    parser.add_argument("-o", "--output_path", help="Output to chosen directory",
+                        type=lambda x: sec.is_valid_path(parser, x))
 
+    # Define custom type
     args: Namespace = parser.parse_args()
 
-    # SCA scan
+    # Set output path for result exports
+    if args.output_path is None:
+        output_path = os.getcwd()
+    else:
+        output_path = args.output_path
+
+    # SCA SCAN
     if "pom.xml" in args.filename:
 
         # Open supplied file
         with open(args.filename, "r") as f:
             file = f.read()
 
+        # Convert XML file to Python Dictionary and assign its attributes to variables
         pom_dict = xmltodict.parse(file)
-
         parent = pom_dict["project"]["parent"]
         spring_version = parent.get("version")
         dependencies = pom_dict["project"]["dependencies"]["dependency"]
         properties = pom_dict["project"]["properties"]
 
-        # print(properties)
-
-        with open("repelsec/java_cpe_dictionary.json", "r") as f:
+        # Load NVD CPE Dictionary
+        with open("repelsec/cpe_dictionary.json", "r") as f:
             cpe_dict = json.load(f)
 
+        # Define empty list to store dictionaries of results
         sca_dict_list = []
 
+        # Define NVD Key
+        with open("repelsec/config/config.txt", "r") as f:
+            nvd_key = f.readline()
+
+        # Iterates through pom.xml dependencies
         for dependency in dependencies:
 
+            # Assign dependency attributes to variables
             artifact = dependency.get("artifactId")
             group = dependency.get("groupId")
             artifact_version = dependency.get("version")
-            version = find_version(artifact_version, spring_version, properties)
+            version = sec.find_version(artifact_version, spring_version, properties)
 
+            # Match artifact with CPE dictionary
             cpe = cpe_dict.get(artifact)
 
+            # If vulnerability exists in CPE
             if cpe is not None:
+                # Define CPE with Artifact version
                 formatted_cpe = cpe.replace("*", version, 1)
 
-                cve_list = nvdlib.searchCVE(cpeName=formatted_cpe, limit=100)
+                # Search NVD database for CVEs assigned to the CPE
+                cve_list = nvdlib.searchCVE(cpeName=formatted_cpe, limit=100,
+                                            key="0714105d-f688-4d3c-a28b-153d23ede07b")
 
+                # Define loop counter
+                vulnerability_number = 0
+
+                # Extract and define desired scan & CVE attributes
                 for cve in cve_list:
                     cve_id = cve.id
-                    description = cve.descriptions[0].value
+                    description = re.sub(r"^$\n", "", cve.descriptions[0].value, flags=re.MULTILINE)
                     severity = cve.score[2]
                     cvss_score = cve.score[1]
                     remediation_action = "Upgrade dependency, implement mitigation, or use secure alternative"
@@ -97,10 +94,13 @@ def main():
                     current_date = current_date_object.strftime("%d/%m/%Y")
                     cve_references = [x.url for x in cve.references]
                     cve_references_str = ", ".join(cve_references)
+                    formatted_artifact = f"{artifact} {version}"
+                    vulnerability_number += 1
 
+                    # Create temp dictionary for each loop
                     sca_temp_dict = {
                         "ID": cve_id,  # CVE Number
-                        "Artifact": f"{artifact} {version}",  # Dependency Artifact
+                        "Artifact": formatted_artifact,  # Dependency Artifact
                         "Group": group,  # Dependency Group
                         "Description": description,  # English Description
                         "Severity": severity,  # Severity (Low - Critical)
@@ -112,12 +112,52 @@ def main():
                         "NVD URL": cve_url,  # NIST CVE URL
                     }
 
-                    # print(sca_temp_dict)
+                    # Append temp dictionary to main dictionary
                     sca_dict_list.append(sca_temp_dict)
 
-                    if args.csv:
-                        df = pd.DataFrame.from_records(sca_dict_list)
-                        df.to_csv("repelsec/sca.csv", index=False)
+                    # Print results to terminal
+                    print(
+                        f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vulnerability_number}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                    print(f"ID - {cve_id}")
+                    print(f"Artifact - {formatted_artifact}")
+                    print(f"Group - {group}")
+                    print(f"Description - {description}")
+                    print(f"Severity - {severity}")
+                    print(f"CVSS - {cvss_score}")
+                    print(f"Remediation Advice - {remediation_action}")
+                    print(f"Discovery Date - {published_date}")
+                    print(f"Scan Date - {current_date}")
+                    print(f"CVE References - {cve_references_str}")
+                    print(f"NVD URL - {cve_url}")
+                    print("\n")
+
+        # If csv argument is enabled, print SCA results to a csv file
+        if args.csv:
+            df = pd.DataFrame.from_records(sca_dict_list)
+            df.to_csv(os.path.join(output_path, "sca.csv"), index=False)
+
+        # If txt argument is enabled, print SCA results to a txt file
+        if args.txt:
+            with open(os.path.join(output_path, "sca.txt"), "w") as f:
+                vuln_index = 0
+
+                for vuln in sca_dict_list:
+                    vuln_index += 1
+
+                    f.write(
+                        f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+                    f.write(f"ID - {vuln.get('ID')}\n")
+                    f.write(f"Artifact - {vuln.get('Artifact')}\n")
+                    f.write(f"Group - {vuln.get('Group')}\n")
+                    f.write(f"Description - {vuln.get('Description')}\n")
+                    f.write(f"Severity - {vuln.get('Severity')}\n")
+                    f.write(f"CVSS - {vuln.get('CVSS')}\n")
+                    f.write(f"Remediation Advice - {vuln.get('Remediation Advice')}\n")
+                    f.write(f"Discovery Date - {vuln.get('Discovery Date')}\n")
+                    f.write(f"Scan Date - {vuln.get('Scan Date')}\n")
+                    f.write(f"CVE References - {vuln.get('CVE References')}\n")
+                    f.write(f"NVD URL - {vuln.get('NVD URL')}\n")
+                    f.write("\n")
 
     # SAST Scan
     elif ".java" in args.filename:
@@ -125,27 +165,20 @@ def main():
         with open(args.filename, "r") as f:
             lines = f.readlines()
             line_number = 0
+
+            # Empty list created to store dictionaries of results
             sast_dict_list = []
 
-            # CWE Vulnerability Objects
-            cwe89_object = cwe_dictionary.CWE89()
-            cwe259_object = cwe_dictionary.CWE259()
-
+            # For each line of source code, run vulnerability scan
             for line in lines:
                 line_number += 1
 
-                # CWE 89 Test
-                cwe89_test = cwe89_object.scan(line)
-                if cwe89_test is True:
-                    vulnerability_dict = cwe89_object.__dict__
-                    vulnerability_dict |= {"line_number": line_number}
-                    sast_dict_list.append(vulnerability_dict)
-
-                # CWE 259 Test
-                cwe259_test = cwe259_object.scan(line)
-                if cwe259_test is True:
-                    vulnerability_dict = cwe259_object.__dict__
-                    vulnerability_dict |= {"line_number": line_number}
-                    sast_dict_list.append(vulnerability_dict)
+                sec.find_vulnerability(line, 89, sast_dict_list, line_number)  # SQL injection scan
+                sec.find_vulnerability(line, 259, sast_dict_list, line_number)  # Hard coded credentials scan
 
         print(sast_dict_list)
+
+        # If csv argument is enabled, print SAST results to a csv file
+        if args.csv:
+            df = pd.DataFrame.from_records(sast_dict_list)
+            df.to_csv(os.path.join(output_path, "sast.csv"), index=False)
