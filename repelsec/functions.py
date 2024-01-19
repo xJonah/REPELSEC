@@ -1,6 +1,5 @@
 import os
 import re
-
 from repelsec import cwe_vulnerabilities
 
 
@@ -33,14 +32,35 @@ def find_version(version, springboot_version, properties_dict):
 
 
 # Function to find vulnerability, scan for vulnerability, and append result to list and return it
-def find_vulnerability(line_str, cwe_number, sast_dict_list, line_number):
-    vulnerability = f"CWE{cwe_number}"
-    vulnerability_object = getattr(cwe_vulnerabilities, vulnerability)
-    vulnerability_test = vulnerability_object.scan(line_str)
+def find_vulnerability(line_str, vuln_object, sast_dict_list):
+    vulnerability_test = vuln_object.scan(line_str)
 
     if vulnerability_test is True:
-        vulnerability_dict = vulnerability_object().__dict__
-        vulnerability_dict |= {"line_number": line_number}
+        obj = vuln_object()
+        vulnerability_dict = {
+            "ID": obj.id,
+            "Name": obj.name,
+            "Description": obj.description,
+            "Severity": obj.severity,
+            "URL": obj.url,
+            "Remediation Advice": obj.remediation_advice,
+        }
         sast_dict_list.append(vulnerability_dict)
 
     return sast_dict_list
+
+
+# Function to measure security score
+def modify_scan_score(score, severity):
+    if score <= 0:
+        return 0
+    elif score > 0 and severity == "Low":
+        return score - 1
+    elif score > 1 and severity == "Medium":
+        return score - 2
+    elif score > 4 and severity == "High":
+        return score - 5
+    elif score > 9 and severity == "Critical":
+        return score - 10
+    else:
+        raise Exception("Unexpected score/severity value")

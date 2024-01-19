@@ -1,13 +1,13 @@
 # Imports
-import os
-import re
-from argparse import ArgumentParser, Namespace
-import nvdlib
-import xmltodict
 import json
+import os
+import nvdlib
 import pandas as pd
-from datetime import datetime
+import xmltodict
 from repelsec import functions as sec
+from argparse import ArgumentParser, Namespace
+from datetime import datetime
+from repelsec import cwe_vulnerabilities
 
 
 def main():
@@ -22,23 +22,28 @@ def main():
     parser.add_argument("-o", "--output_path", help="Output to chosen directory",
                         type=lambda x: sec.is_valid_path(parser, x))
 
-    # Define custom type
+    # Define custom type args
     args: Namespace = parser.parse_args()
 
     # Set output path for result exports
     if args.output_path is None:
-        output_path = os.getcwd()
+        # output_path = os.getcwd()
+        output_path = os.path.join(os.getcwd(), "repelsec/results")
+
     else:
         output_path = args.output_path
 
+    # Define filename from path provided
+    filename = os.path.basename(args.filename)
+
     # SCA SCAN
-    if "pom.xml" in args.filename:
+    if filename == "pom.xml":
 
         # Open supplied file
         with open(args.filename, "r") as f:
             file = f.read()
 
-        # Convert XML file to Python Dictionary and assign its attributes to variables
+        # Convert pom.xml file to Python Dictionary and assign its attributes to variables
         pom_dict = xmltodict.parse(file)
         parent = pom_dict["project"]["parent"]
         spring_version = parent.get("version")
@@ -49,12 +54,18 @@ def main():
         with open("repelsec/cpe_dictionary.json", "r") as f:
             cpe_dict = json.load(f)
 
+        # Define initial scan score (Security rating for overall scan)
+        scan_score = 100
+
+        # Define initial scan result (Pass/Fail)
+        scan_result = "Pass"
+
         # Define empty list to store dictionaries of results
         sca_dict_list = []
 
-        # Define NVD Key
-        with open("repelsec/config/config.txt", "r") as f:
-            nvd_key = f.readline()
+        # Define NVD API Key (if desired)
+        # with open("repelsec/config/config.txt", "r") as f:
+        #    nvd_key = f.readline()
 
         # Define loop counter
         vulnerability_number = 0
@@ -84,7 +95,7 @@ def main():
                     cve_id = cve.id
                     description_array = cve.descriptions[0].value.split()
                     description = " ".join(description_array)
-                    severity = cve.score[2]
+                    severity = cve.score[2].title()
                     cvss_score = cve.score[1]
                     remediation_action = "Upgrade dependency, implement mitigation, or use secure alternative"
                     cve_url = cve.url
@@ -96,6 +107,14 @@ def main():
                     cve_references_str = ", ".join(cve_references)
                     formatted_artifact = f"{artifact} {version}"
                     vulnerability_number += 1
+
+                    # Modify security score
+                    scan_score = sec.modify_scan_score(scan_score, severity)
+
+                    # Modify scan result. If scan contains a critical or high risk vulnerability, the scan does not
+                    # meet policy and fails.
+                    if severity == "Critical" or severity == "High":
+                        scan_result = "Fail"
 
                     # Create temp dictionary for each loop
                     sca_temp_dict = {
@@ -130,6 +149,16 @@ def main():
                     print(f"CVE References - {cve_references_str}")
                     print(f"NVD URL - {cve_url}")
                     print("\n")
+        print(f"Security Result - {scan_result}")
+        print(f"Security Score - {scan_score}")
+        print("\n")
+
+        # Merge additional values into dictionaries
+        for sca_dict in sca_dict_list:
+            sca_dict |= {
+                "Scan Result": scan_result,  # Scan Pass/Fail
+                "Scan Score": scan_score,  # Scan score
+            }
 
         # If csv argument is enabled, print SCA results to a csv file
         if args.csv:
@@ -158,9 +187,21 @@ def main():
                     f.write(f"CVE References - {vuln.get('CVE References')}\n")
                     f.write(f"NVD URL - {vuln.get('NVD URL')}\n")
                     f.write("\n")
+                f.write(f"Scan Result - {scan_result}\n")
+                f.write(f"Security Score - {scan_score}\n")
+                f.write("\n")
+
+        # If pdf argument is enabled, print SCA results to a PDF file
+        if args.pdf:
+            print("To Do")
 
     # SAST Scan
-    elif ".java" in args.filename:
+    elif ".java" in filename:
+
+        # Define initial Scan Result and Score
+        scan_score = 100
+        scan_result = "Pass"
+
         # Open supplied file
         with open(args.filename, "r") as f:
             lines = f.readlines()
@@ -169,16 +210,87 @@ def main():
             # Empty list created to store dictionaries of results
             sast_dict_list = []
 
+            # Create CWE Objects
+            cwe89_obj = getattr(cwe_vulnerabilities, "CWE89")
+            cwe259_obj = getattr(cwe_vulnerabilities, "CWE259")
+            cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
+            cwe321_obj = getattr(cwe_vulnerabilities, "CWE321")
+            cwe326_obj = getattr(cwe_vulnerabilities, "CWE326")
+
             # For each line of source code, run vulnerability scan
             for line in lines:
                 line_number += 1
 
-                sec.find_vulnerability(line, 89, sast_dict_list, line_number)  # SQL injection scan
-                sec.find_vulnerability(line, 259, sast_dict_list, line_number)  # Hard coded credentials scan
+                sec.find_vulnerability(line, cwe89_obj, sast_dict_list)  # SQL injection scan
+                sec.find_vulnerability(line, cwe259_obj, sast_dict_list)  # Hard coded password scan
+                sec.find_vulnerability(line, cwe798_obj, sast_dict_list)  # Hard coded credentials scan
+                sec.find_vulnerability(line, cwe321_obj, sast_dict_list)  # Hard-coded Cryptographic Key scan
+                sec.find_vulnerability(line, cwe326_obj, sast_dict_list)  # Weak Cryptographic Key scan
 
-        print(sast_dict_list)
+            vuln_index = 0
+
+            for vuln in sast_dict_list:
+                severity = vuln.get("Severity")
+
+                if severity == "Critical" or severity == "High":
+                    scan_result = "Fail"
+
+                scan_score = sec.modify_scan_score(scan_score, severity)
+
+            for sast_dict in sast_dict_list:
+                # Merge additional values into Dictionary
+                sast_dict |= {
+                    "Scan Result": scan_result,
+                    "Scan Score": scan_score,
+                    "Module": filename,
+                    "Line Number": line_number
+                }
+
+                vuln_index += 1
+
+                # Print results to terminal
+                print(
+                    f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print(f"ID - {sast_dict.get('ID')}")
+                print(f"Name - {sast_dict.get('Name')}")
+                print(f"Description - {sast_dict.get('Description')}")
+                print(f"Severity - {sast_dict.get('Severity')}")
+                print(f"URL - {sast_dict.get('URL')}")
+                print(f"Remediation Advice - {sast_dict.get('Remediation Advice')}")
+                print(f"Module - {sast_dict.get('Module')}")
+                print(f"Line Number - {sast_dict.get('Line Number')}")
+                print("\n")
+            print(f"Scan Result - {scan_result}")
+            print(f"Scan Score - {scan_score}")
 
         # If csv argument is enabled, print SAST results to a csv file
         if args.csv:
             df = pd.DataFrame.from_records(sast_dict_list)
             df.to_csv(os.path.join(output_path, "sast.csv"), index=False)
+
+        # If txt argument is enabled, print SCA results to a txt file
+        if args.txt:
+            with open(os.path.join(output_path, "sast.txt"), "w") as f:
+                vuln_index = 0
+
+                for vuln in sast_dict_list:
+                    vuln_index += 1
+
+                    f.write(
+                        f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+                    f.write(f"ID - {vuln.get('ID')}\n")
+                    f.write(f"Name - {vuln.get('Name')}\n")
+                    f.write(f"Description - {vuln.get('Description')}\n")
+                    f.write(f"Severity - {vuln.get('Severity')}\n")
+                    f.write(f"URL - {vuln.get('URL')}\n")
+                    f.write(f"Remediation Advice - {vuln.get('Remediation Advice')}\n")
+                    f.write(f"Module - {vuln.get('Module')}\n")
+                    f.write(f"Line Number - {vuln.get('Line Number')}\n")
+                    f.write("\n")
+                f.write(f"Scan Result - {scan_result}\n")
+                f.write(f"Scan Score - {scan_score}\n")
+                f.write("\n")
+
+        # If pdf argument is enabled, print SCA results to a PDF file
+        if args.pdf:
+            print("To Do")

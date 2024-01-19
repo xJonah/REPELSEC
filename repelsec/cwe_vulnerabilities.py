@@ -12,8 +12,12 @@ class CWE89:
             "The product constructs all or part of an SQL command using externally-influenced input from an "
             "upstream component, but it does not neutralize or incorrectly neutralizes special elements that "
             "could modify the intended SQL command when it is sent to a downstream component")
-        self.severity = "Very High"
-        self.url = "https://cwe.mitre.org/data/definitions/89.html"
+        self.severity = "Critical"
+        self.url = ("https://cwe.mitre.org/data/definitions/89.html, "
+                    "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html")
+        self.remediation_advice = ("Prepared statements, client and server side input validation, safe stored "
+                                   "procedures, or escaping user input can be used to mitigate against SQL injection "
+                                   "attacks. Refer to OWASP cheat sheet for examples.")
 
     @staticmethod
     def scan(line_str):
@@ -28,19 +32,84 @@ class CWE259:
     def __init__(self):
         self.id = "CWE-259"
         self.name = "Use of Hard-coded Password"
+        self.description = ("The product contains hard-coded credentials, such as a password or cryptographic key, "
+                            "which it uses for its own inbound authentication, outbound communication to external "
+                            "components, or encryption of internal data.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/798.html"
+        self.remediation_advice = "Passwords should be hashed and stored safely in a password-protected external file"
+
+    @staticmethod
+    def scan(line_str):
+        formatted_str = line_str.replace(" ", "")
+        pattern_found = re.findall(
+            pattern="password=[\"']|pwd=[\"']|passwd=[\"']|pw=[\"']|pword=[\"']|pass=[\"']|passcode=[\"']",
+            string=formatted_str, flags=re.IGNORECASE)
+
+        if pattern_found:
+            return True
+        else:
+            return False
+
+
+# Use of Hard-coded Credentials
+class CWE798:
+    def __init__(self):
+        self.id = "CWE-798"
+        self.name = "Use of Hard-coded Credentials"
         self.description = (
             "The product contains a hard-coded password, which it uses for its own inbound authentication or"
             "for outbound communication to external components.")
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/259.html"
+        self.remediation_advice = "Credentials should be hashed and stored safely in a password-protected external file"
 
     @staticmethod
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
-        pattern_found = re.findall(pattern="username=[\"']|password=[\"']|key=[\"']", string=formatted_str,
+        pattern_found = re.findall(pattern="username=[\"']|uname=[\"']|id=[\"']|username=[\"']", string=formatted_str,
                                    flags=re.IGNORECASE)
 
         if pattern_found:
             return True
         else:
             return False
+
+
+# Use of Hard-coded Cryptographic Key
+class CWE321:
+    def __init__(self):
+        self.id = "CWE-321"
+        self.name = "Use of Hard-coded Cryptographic Key"
+        self.description = ("The use of a hard-coded cryptographic key significantly increases the possibility that "
+                            "encrypted data may be recovered.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/321.html"
+        self.remediation_advice = "Cryptographic keys should be stored safely in a password-protected external file"
+
+    @staticmethod
+    def scan(line_str):
+        formatted_str = line_str.replace(" ", "")
+        pattern_found = re.findall(pattern="key=[\"']|token=[\"']|crypto_key=[\"']|auth=[\"']|secret=[\"']",
+                                   string=formatted_str, flags=re.IGNORECASE)
+
+        if pattern_found:
+            return True
+        else:
+            return False
+
+
+# Inadequate Encryption Strength
+class CWE326:
+    def __init__(self):
+        self.id = "CWE-326"
+        self.name = "Inadequate Encryption Strength"
+        self.description = ("The product stores or transmits sensitive data using an encryption scheme that is "
+                            "theoretically sound, but is not strong enough for the level of protection required.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/326.html"
+        self.remediation_advice = ""
+
+    @staticmethod
+    def scan(line_str):
+        return False
