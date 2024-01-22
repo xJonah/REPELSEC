@@ -32,11 +32,11 @@ class CWE259:
     def __init__(self):
         self.id = "CWE-259"
         self.name = "Use of Hard-coded Password"
-        self.description = ("The product contains hard-coded credentials, such as a password or cryptographic key, "
-                            "which it uses for its own inbound authentication, outbound communication to external "
-                            "components, or encryption of internal data.")
+        self.description = (
+            "The product contains a hard-coded password, which it uses for its own inbound authentication or for "
+            "outbound communication to external components.")
         self.severity = "Low"
-        self.url = "https://cwe.mitre.org/data/definitions/798.html"
+        self.url = "https://cwe.mitre.org/data/definitions/259.html"
         self.remediation_advice = "Passwords should be hashed and stored safely in a password-protected external file"
 
     @staticmethod
@@ -57,11 +57,11 @@ class CWE798:
     def __init__(self):
         self.id = "CWE-798"
         self.name = "Use of Hard-coded Credentials"
-        self.description = (
-            "The product contains a hard-coded password, which it uses for its own inbound authentication or"
-            "for outbound communication to external components.")
+        self.description = ("The product contains hard-coded credentials, such as a password or cryptographic key, "
+                            "which it uses for its own inbound authentication, outbound communication to external "
+                            "components, or encryption of internal data.")
         self.severity = "Low"
-        self.url = "https://cwe.mitre.org/data/definitions/259.html"
+        self.url = "https://cwe.mitre.org/data/definitions/798.html"
         self.remediation_advice = "Credentials should be hashed and stored safely in a password-protected external file"
 
     @staticmethod

@@ -1,0 +1,42 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY 1  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ID - CWE-798
+Name - Use of Hard-coded Credentials
+Description - The product contains a hard-coded password, which it uses for its own inbound authentication orfor outbound communication to external components.
+Severity - Low
+URL - https://cwe.mitre.org/data/definitions/259.html
+Remediation Advice - Credentials should be hashed and stored safely in a password-protected external file
+Module - cwe_vulnerabilities.java
+Line Number - 31
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY 2  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ID - CWE-259
+Name - Use of Hard-coded Password
+Description - The product contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.
+Severity - Low
+URL - https://cwe.mitre.org/data/definitions/798.html
+Remediation Advice - Passwords should be hashed and stored safely in a password-protected external file
+Module - cwe_vulnerabilities.java
+Line Number - 31
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY 3  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ID - CWE-321
+Name - Use of Hard-coded Cryptographic Key
+Description - The use of a hard-coded cryptographic key significantly increases the possibility that encrypted data may be recovered.
+Severity - Low
+URL - https://cwe.mitre.org/data/definitions/321.html
+Remediation Advice - Cryptographic keys should be stored safely in a password-protected external file
+Module - cwe_vulnerabilities.java
+Line Number - 31
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY 4  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ID - CWE-89
+Name - Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
+Description - The product constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component
+Severity - Critical
+URL - https://cwe.mitre.org/data/definitions/89.html, https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
+Remediation Advice - Prepared statements, client and server side input validation, safe stored procedures, or escaping user input can be used to mitigate against SQL injection attacks. Refer to OWASP cheat sheet for examples.
+Module - cwe_vulnerabilities.java
+Line Number - 31
+
+Scan Result - Fail
+Scan Score - 87

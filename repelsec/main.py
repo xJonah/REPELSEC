@@ -8,6 +8,7 @@ from repelsec import functions as sec
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
 from repelsec import cwe_vulnerabilities
+from repelsec.generate_pdf import PDF
 
 
 def main():
@@ -19,6 +20,8 @@ def main():
     parser.add_argument("-c", "--csv", help="Export results to a csv file", action="store_true")
     parser.add_argument("-p", "--pdf", help="Export results to a pdf file", action="store_true")
     parser.add_argument("-t", "--txt", help="Export results to a txt file", action="store_true")
+    parser.add_argument("-e", "--encrypt", help="Encrypt/Password protect PDF Report",
+                        type=lambda x: sec.is_valid_password(parser, x))
     parser.add_argument("-o", "--output_path", help="Output to chosen directory",
                         type=lambda x: sec.is_valid_path(parser, x))
 
@@ -29,7 +32,6 @@ def main():
     if args.output_path is None:
         # output_path = os.getcwd()
         output_path = os.path.join(os.getcwd(), "repelsec/results")
-
     else:
         output_path = args.output_path
 
@@ -149,8 +151,12 @@ def main():
                     print(f"CVE References - {cve_references_str}")
                     print(f"NVD URL - {cve_url}")
                     print("\n")
+        print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print(f"Security Result - {scan_result}")
         print(f"Security Score - {scan_score}")
+
+        if args.txt or args.pdf or args.csv:
+            print(f"Results saved to {output_path}")
         print("\n")
 
         # Merge additional values into dictionaries
@@ -165,7 +171,7 @@ def main():
             df = pd.DataFrame.from_records(sca_dict_list)
             df.to_csv(os.path.join(output_path, "sca.csv"), index=False)
 
-        # If txt argument is enabled, print SCA results to a txt file
+        # If txt argument is enabled, write SCA results to a txt file
         if args.txt:
             with open(os.path.join(output_path, "sca.txt"), "w") as f:
                 vuln_index = 0
@@ -193,7 +199,14 @@ def main():
 
         # If pdf argument is enabled, print SCA results to a PDF file
         if args.pdf:
-            print("To Do")
+            pdf = PDF()
+            pdf_path = os.path.join(output_path, "sast.pdf")
+            pdf.create_pdf("SCA", sca_dict_list)
+            pdf.output(pdf_path, 'F')
+
+            if args.encrypt:
+                encrypted_path = os.path.join(output_path, "e_sast.pdf")
+                sec.add_pdf_password(pdf_path, encrypted_path, args.encrypt)
 
     # SAST Scan
     elif ".java" in filename:
@@ -221,14 +234,16 @@ def main():
             for line in lines:
                 line_number += 1
 
-                sec.find_vulnerability(line, cwe89_obj, sast_dict_list)  # SQL injection scan
-                sec.find_vulnerability(line, cwe259_obj, sast_dict_list)  # Hard coded password scan
-                sec.find_vulnerability(line, cwe798_obj, sast_dict_list)  # Hard coded credentials scan
-                sec.find_vulnerability(line, cwe321_obj, sast_dict_list)  # Hard-coded Cryptographic Key scan
-                sec.find_vulnerability(line, cwe326_obj, sast_dict_list)  # Weak Cryptographic Key scan
+                sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)  # SQL injection scan
+                sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)  # Hard coded password scan
+                sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)  # Hard coded credentials scan
+                sec.find_vulnerability(line, cwe321_obj, sast_dict_list,
+                                       line_number)  # Hard-coded Cryptographic Key scan
+                sec.find_vulnerability(line, cwe326_obj, sast_dict_list, line_number)  # Weak Cryptographic Key scan
 
             vuln_index = 0
 
+            # Scan fails if high or critical vulnerabilities present
             for vuln in sast_dict_list:
                 severity = vuln.get("Severity")
 
@@ -237,13 +252,12 @@ def main():
 
                 scan_score = sec.modify_scan_score(scan_score, severity)
 
+            # Merge additional values into Dictionary
             for sast_dict in sast_dict_list:
-                # Merge additional values into Dictionary
                 sast_dict |= {
                     "Scan Result": scan_result,
                     "Scan Score": scan_score,
                     "Module": filename,
-                    "Line Number": line_number
                 }
 
                 vuln_index += 1
@@ -260,8 +274,12 @@ def main():
                 print(f"Module - {sast_dict.get('Module')}")
                 print(f"Line Number - {sast_dict.get('Line Number')}")
                 print("\n")
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print(f"Scan Result - {scan_result}")
             print(f"Scan Score - {scan_score}")
+            if args.txt or args.pdf or args.csv:
+                print(f"Results saved to {output_path}")
+            print("\n")
 
         # If csv argument is enabled, print SAST results to a csv file
         if args.csv:
@@ -293,4 +311,11 @@ def main():
 
         # If pdf argument is enabled, print SCA results to a PDF file
         if args.pdf:
-            print("To Do")
+            pdf = PDF()
+            pdf_path = os.path.join(output_path, "sast.pdf")
+            pdf.create_pdf("SAST", sast_dict_list)
+            pdf.output(pdf_path, 'F')
+
+            if args.encrypt:
+                encrypted_path = os.path.join(output_path, "e_sast.pdf")
+                sec.add_pdf_password(pdf_path, encrypted_path, args.encrypt)

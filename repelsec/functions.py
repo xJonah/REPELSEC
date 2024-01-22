@@ -1,6 +1,6 @@
 import os
 import re
-from repelsec import cwe_vulnerabilities
+import PyPDF2
 
 
 # Function to check if path/file exists
@@ -32,7 +32,7 @@ def find_version(version, springboot_version, properties_dict):
 
 
 # Function to find vulnerability, scan for vulnerability, and append result to list and return it
-def find_vulnerability(line_str, vuln_object, sast_dict_list):
+def find_vulnerability(line_str, vuln_object, sast_dict_list, line_number):
     vulnerability_test = vuln_object.scan(line_str)
 
     if vulnerability_test is True:
@@ -44,6 +44,7 @@ def find_vulnerability(line_str, vuln_object, sast_dict_list):
             "Severity": obj.severity,
             "URL": obj.url,
             "Remediation Advice": obj.remediation_advice,
+            "Line Number": line_number,
         }
         sast_dict_list.append(vulnerability_dict)
 
@@ -64,3 +65,34 @@ def modify_scan_score(score, severity):
         return score - 10
     else:
         raise Exception("Unexpected score/severity value")
+
+
+# Check for valid password encryption
+def is_valid_password(parser, x):
+    regex = re.compile(
+        r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-])[A-Za-z\d!@#$%^&*()_+{}\[\]:;<>,'
+        r'.?~\\/-]{8,}$',
+        re.VERBOSE)
+
+    if bool(regex.match(x)):
+        return x
+    else:
+        parser.error(
+            "Password must be a minimum of 8 characters and contain an uppercase, a lowercase, a special character, "
+            "and a digit")
+
+
+def add_pdf_password(temp_path, output_path, password):
+    with open(temp_path, "rb") as f:
+        pdf_reader = PyPDF2.PdfReader(f)
+        pdf_writer = PyPDF2.PdfWriter()
+
+        for page_num in range(len(pdf_reader.pages)):
+            pdf_writer.add_page(pdf_reader.pages[page_num])
+
+        pdf_writer.encrypt(password)
+
+        with open(output_path, "wb") as output_f:
+            pdf_writer.write(output_f)
+
+    os.remove(temp_path)

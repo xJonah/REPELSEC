@@ -3,3 +3,6 @@ xmltodict~=0.13.0
 pandas~=2.1.1
 argparse~=1.4.0
 setuptools~=69.0.2
+repelsec~=0.1
+fpdf~=1.7.2
+PyPDF2~=3.0.1
