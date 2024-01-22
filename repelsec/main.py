@@ -12,6 +12,9 @@ from repelsec.generate_pdf import PDF
 
 
 def main():
+    # Print blank line
+    print("\n")
+
     # Instantiate argument parser object
     parser = ArgumentParser()
 
@@ -20,7 +23,7 @@ def main():
     parser.add_argument("-c", "--csv", help="Export results to a csv file", action="store_true")
     parser.add_argument("-p", "--pdf", help="Export results to a pdf file", action="store_true")
     parser.add_argument("-t", "--txt", help="Export results to a txt file", action="store_true")
-    parser.add_argument("-e", "--encrypt", help="Encrypt/Password protect PDF Report",
+    parser.add_argument("-e", "--encrypt", help="Enable encryption mode and password protect PDF report",
                         type=lambda x: sec.is_valid_password(parser, x))
     parser.add_argument("-o", "--output_path", help="Output to chosen directory",
                         type=lambda x: sec.is_valid_path(parser, x))
@@ -66,7 +69,7 @@ def main():
         sca_dict_list = []
 
         # Define NVD API Key (if desired)
-        # with open("repelsec/config/config.txt", "r") as f:
+        # with open("repelsec/config/nvd_key.txt", "r") as f:
         #    nvd_key = f.readline()
 
         # Define loop counter
@@ -136,25 +139,29 @@ def main():
                     # Append temp dictionary to main dictionary
                     sca_dict_list.append(sca_temp_dict)
 
-                    # Print results to terminal
-                    print(
-                        f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vulnerability_number}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                    print(f"ID - {cve_id}")
-                    print(f"Artifact - {formatted_artifact}")
-                    print(f"Group - {group}")
-                    print(f"Description - {description}")
-                    print(f"Severity - {severity}")
-                    print(f"CVSS - {cvss_score}")
-                    print(f"Remediation Advice - {remediation_action}")
-                    print(f"Discovery Date - {published_date}")
-                    print(f"Scan Date - {current_date}")
-                    print(f"CVE References - {cve_references_str}")
-                    print(f"NVD URL - {cve_url}")
-                    print("\n")
+                    if not args.encrypt:
+
+                        # Print results to terminal
+                        print(
+                            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vulnerability_number}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                        print(f"ID - {cve_id}")
+                        print(f"Artifact - {formatted_artifact}")
+                        print(f"Group - {group}")
+                        print(f"Description - {description}")
+                        print(f"Severity - {severity}")
+                        print(f"CVSS - {cvss_score}")
+                        print(f"Remediation Advice - {remediation_action}")
+                        print(f"Discovery Date - {published_date}")
+                        print(f"Scan Date - {current_date}")
+                        print(f"CVE References - {cve_references_str}")
+                        print(f"NVD URL - {cve_url}")
+                        print("\n")
+                    else:
+                        print(f"{vulnerability_number} vulnerabilities found - ENCRYPTION MODE ENABLED")
+                        print("\n")
         print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print(f"Security Result - {scan_result}")
         print(f"Security Score - {scan_score}")
-
         if args.txt or args.pdf or args.csv:
             print(f"Results saved to {output_path}")
         print("\n")
@@ -262,18 +269,22 @@ def main():
 
                 vuln_index += 1
 
-                # Print results to terminal
-                print(
-                    f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                print(f"ID - {sast_dict.get('ID')}")
-                print(f"Name - {sast_dict.get('Name')}")
-                print(f"Description - {sast_dict.get('Description')}")
-                print(f"Severity - {sast_dict.get('Severity')}")
-                print(f"URL - {sast_dict.get('URL')}")
-                print(f"Remediation Advice - {sast_dict.get('Remediation Advice')}")
-                print(f"Module - {sast_dict.get('Module')}")
-                print(f"Line Number - {sast_dict.get('Line Number')}")
-                print("\n")
+                if not args.encrypt:
+                    # Print results to terminal
+                    print(
+                        f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                    print(f"ID - {sast_dict.get('ID')}")
+                    print(f"Name - {sast_dict.get('Name')}")
+                    print(f"Description - {sast_dict.get('Description')}")
+                    print(f"Severity - {sast_dict.get('Severity')}")
+                    print(f"URL - {sast_dict.get('URL')}")
+                    print(f"Remediation Advice - {sast_dict.get('Remediation Advice')}")
+                    print(f"Module - {sast_dict.get('Module')}")
+                    print(f"Line Number - {sast_dict.get('Line Number')}")
+                    print("\n")
+                else:
+                    print(f"{vuln_index} vulnerabilities found - ENCRYPTION MODE ENABLED")
+                    print("\n")
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print(f"Scan Result - {scan_result}")
             print(f"Scan Score - {scan_score}")

@@ -1,18 +1,20 @@
 import java.sql.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class cwe_vulnerabilities {
 
-    // CWE-798 & CWE-259
+    // Hard-coded credentials (CWE-798) & hard-coded password (CWE-259)
     static final String DB_URL = "jdbc:mysql://localhost/repelsec";
     static final String USERNAME = "jonah";
     static final String PASSWORD = "password123";
 
-    // CWE-326 & CWE-321
-    static final String KEY = "";
-
+    // Hard-coded cryptography key (CWE-321)
+    static final String KEY = "tokenABC123";
     public static void main(String[] args) {
 
-        // CWE-89
+        // SQL Injection (CWE-89)
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String user_email = request.getParameter("email"); // "random@gmail.com"
@@ -24,6 +26,20 @@ public class cwe_vulnerabilities {
 
         catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        // Inadequate encryption strength (CWE-326)
+        try {
+          File myObj = new File("C:/Users/Jonah/Documents/GitHub/REPELSEC/repelsec/config/weak_token.txt");
+          Scanner myReader = new Scanner(myObj);
+          if (myReader.hasNextLine()) {
+            String data = myReader.nextLine();
+            System.out.println(data);
+          }
+          myReader.close();
+        } catch (FileNotFoundException e) {
+          System.out.println("An error occurred.");
+          e.printStackTrace();
         }
 
 

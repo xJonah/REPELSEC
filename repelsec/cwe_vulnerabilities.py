@@ -90,7 +90,7 @@ class CWE321:
     @staticmethod
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
-        pattern_found = re.findall(pattern="key=[\"']|token=[\"']|crypto_key=[\"']|auth=[\"']|secret=[\"']",
+        pattern_found = re.findall(pattern="key=[\"']|token=[\"']|encryption_key=[\"']|auth=[\"']|secret=[\"']",
                                    string=formatted_str, flags=re.IGNORECASE)
 
         if pattern_found:
@@ -112,4 +112,31 @@ class CWE326:
 
     @staticmethod
     def scan(line_str):
-        return False
+        formatted_str = line_str.replace(" ", "")
+        pattern_found = re.findall(pattern=r'newFile\("([^"]*)"\)',
+                                   string=formatted_str, flags=re.IGNORECASE)
+
+        if len(pattern_found) > 0:
+            path = pattern_found[0]
+
+            with open(path, "r") as f:
+                token = f.readline()
+
+            # Check the length of the token
+            length_score = min(len(token) / 16.0, 1.0)
+
+            # Check the complexity of characters (lowercase, uppercase, digits, symbols)
+            lowercase = any(c.islower() for c in token)
+            uppercase = any(c.isupper() for c in token)
+            digits = any(c.isdigit() for c in token)
+            symbols = bool(re.search(r'[!@#$%^&*(),.?":{}|<>]', token))
+
+            complexity_score = sum([lowercase, uppercase, digits, symbols]) / 4.0
+
+            # Combine scores and provide an overall strength assessment
+            total_score = (length_score + complexity_score) / 2.0
+
+            if total_score >= 0.75:
+                return False
+            else:
+                return True
