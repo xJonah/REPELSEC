@@ -12,6 +12,10 @@ public class cwe_vulnerabilities {
 
     // Hard-coded cryptography key (CWE-321)
     static final String KEY = "tokenABC123";
+
+    // native JNI Call (CWE-111) - Echo a buffer from C/C++ programming languages. Potential for buffer overflow.
+    public native void echoBuffer();
+
     public static void main(String[] args) {
 
         // SQL Injection (CWE-89)
@@ -24,23 +28,30 @@ public class cwe_vulnerabilities {
             String query = String.format("SELECT * FROM Users where email=%s AND password=%s", user_email, user_password);
             ResultSet result = stmt.executeQuery(query);
 
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
+        // CWE-209: Generation of Error Message Containing Sensitive Information
+        catch (SQLException e) { System.out.println(e) }
 
         // Inadequate encryption strength (CWE-326)
         try {
           File myObj = new File("C:/Users/Jonah/Documents/GitHub/REPELSEC/repelsec/config/weak_token.txt");
           Scanner myReader = new Scanner(myObj);
           if (myReader.hasNextLine()) {
-            String data = myReader.nextLine();
-            System.out.println(data);
+            String token = myReader.nextLine();
           }
           myReader.close();
         } catch (FileNotFoundException e) {
           System.out.println("An error occurred.");
           e.printStackTrace();
         }
+
+        // Empty Synchronized Block (CWE-585)
+        synchronized(this) { }
+
+        // Integer overflow (CWE-190) & integer underflow (CWE-191)
+        int over = 2147483647 + 5;
+        int under = Integer.MIN_VALUE - 5;
+
+
 
 
     }

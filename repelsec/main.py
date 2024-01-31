@@ -236,17 +236,26 @@ def main():
             cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
             cwe321_obj = getattr(cwe_vulnerabilities, "CWE321")
             cwe326_obj = getattr(cwe_vulnerabilities, "CWE326")
+            cwe585_obj = getattr(cwe_vulnerabilities, "CWE585")
+            cwe111_obj = getattr(cwe_vulnerabilities, "CWE111")
+            cwe190_obj = getattr(cwe_vulnerabilities, "CWE190")
+            cwe191_obj = getattr(cwe_vulnerabilities, "CWE191")
 
             # For each line of source code, run vulnerability scan
             for line in lines:
                 line_number += 1
 
-                sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)  # SQL injection scan
-                sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)  # Hard coded password scan
-                sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)  # Hard coded credentials scan
-                sec.find_vulnerability(line, cwe321_obj, sast_dict_list,
-                                       line_number)  # Hard-coded Cryptographic Key scan
-                sec.find_vulnerability(line, cwe326_obj, sast_dict_list, line_number)  # Weak Cryptographic Key scan
+                if line:
+                    sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)  # SQL injection scan
+                    sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)  # Hard coded password scan
+                    sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)  # Hard coded credentials scan
+                    sec.find_vulnerability(line, cwe321_obj, sast_dict_list,
+                                           line_number)  # Hard-coded Cryptographic Key scan
+                    sec.find_vulnerability(line, cwe326_obj, sast_dict_list, line_number)  # Weak Cryptographic Key scan
+                    sec.find_vulnerability(line, cwe585_obj, sast_dict_list, line_number)  # Empty Synchronisation Scan
+                    sec.find_vulnerability(line, cwe111_obj, sast_dict_list, line_number)  # JNI Call Scan
+                    sec.find_vulnerability(line, cwe190_obj, sast_dict_list, line_number)  # Integer Overflow Scan
+                    sec.find_vulnerability(line, cwe191_obj, sast_dict_list, line_number)  # Integer Underflow Scan
 
             vuln_index = 0
 

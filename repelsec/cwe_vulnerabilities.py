@@ -90,8 +90,9 @@ class CWE321:
     @staticmethod
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
-        pattern_found = re.findall(pattern="key=[\"']|token=[\"']|encryption_key=[\"']|auth=[\"']|secret=[\"']",
-                                   string=formatted_str, flags=re.IGNORECASE)
+        pattern_found = re.findall(
+            pattern="key=[\"']|token=[\"']|encryption_key=[\"']|auth=[\"']|secret=[\"']|encryption=[\"']",
+            string=formatted_str, flags=re.IGNORECASE)
 
         if pattern_found:
             return True
@@ -108,15 +109,18 @@ class CWE326:
                             "theoretically sound, but is not strong enough for the level of protection required.")
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/326.html"
-        self.remediation_advice = ""
+        self.remediation_advice = ("Use trusted libraries/APIs that create encryption keys using best practices "
+                                   "or define long, complex strings with a variety of letters, digits, upper and "
+                                   "lowercase, and special characters.")
 
     @staticmethod
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
-        pattern_found = re.findall(pattern=r'newFile\("([^"]*)"\)',
-                                   string=formatted_str, flags=re.IGNORECASE)
+        pattern_found = re.findall(
+            pattern=r'newFile\("([^"]*)\/([^"]*)(token|key|secret|auth|encryption_key|encryption)([^"]*)"\)',
+            string=formatted_str, flags=re.IGNORECASE)
 
-        if len(pattern_found) > 0:
+        if pattern_found:
             path = pattern_found[0]
 
             with open(path, "r") as f:
@@ -140,3 +144,119 @@ class CWE326:
                 return False
             else:
                 return True
+
+
+# Empty Synchronized Block
+class CWE585:
+    def __init__(self):
+        self.id = "CWE-585"
+        self.name = "Empty Synchronized Block"
+        self.description = ("An empty synchronized block does not actually accomplish any synchronization and may "
+                            "indicate a troubled section of code. An empty synchronized block can occur because code "
+                            "no longer needed within the synchronized block is commented out without removing the "
+                            "synchronized block.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/585.html"
+        self.remediation_advice = ("Remove empty synchronised block or define procedures that access or modify data "
+                                   "that is exposed to multiple threads")
+
+    @staticmethod
+    def scan(line_str):
+        formatted_str = line_str.replace(" ", "")
+        pattern_found = re.findall(pattern="synchronized(this){}", string=formatted_str)
+
+        if pattern_found:
+            return True
+        else:
+            return False
+
+
+# Potential for unsafe JNI
+class CWE111:
+    def __init__(self):
+        self.id = "CWE-111"
+        self.name = "Direct Use of Unsafe JNI"
+        self.description = (
+            "When a Java application uses the Java Native Interface (JNI) to call code written in another programming "
+            "language, it can expose the application to weaknesses in that code, even if those weaknesses cannot "
+            "occur in Java.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/111.html"
+        self.remediation_advice = ("Implement error handling around JNI call; do not use JNI calls if native "
+                                   "library is not trusted; use Java API equivalents if they exist")
+
+    @staticmethod
+    def scan(line_str):
+        pattern_found = re.findall(pattern="public|protected|private native", string=line_str)
+
+        if pattern_found:
+            return True
+        else:
+            return False
+
+
+# Integer Overflow
+class CWE190:
+    def __init__(self):
+        self.id = "CWE-190"
+        self.name = "Integer Overflow or Wraparound"
+        self.description = (
+            "An integer overflow or wraparound occurs when an integer value is incremented to a value that is too "
+            "large to store in the associated representation. When this occurs, the value may wrap to "
+            "become a very small or negative number.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/190.html"
+        self.remediation_advice = ("Implement exception handling; use another data type such as Long or "
+                                   "BigInteger if performing operations close to the maximum of an Integer")
+
+    @staticmethod
+    def scan(line_str):
+        formatted_str = line_str.replace(" ", "")
+
+        if "Integer.MAX_VALUE+" or "2147483647+" in formatted_str:
+            return True
+        else:
+            return False
+
+
+# Integer Underflow
+class CWE191:
+    def __init__(self):
+        self.id = "CWE-191"
+        self.name = "Integer Underflow (Wrap or Wraparound)"
+        self.description = ("The product subtracts one value from another, such that the result is less than the "
+                            "minimum allowable integer value, which produces a value that is not equal to the "
+                            "correct result.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/191.html"
+        self.remediation_advice = ("Implement exception handling; use another data type such as Long or "
+                                   "BigInteger if performing operations close to the minimum of an Integer")
+
+    @staticmethod
+    def scan(line_str):
+        formatted_str = line_str.replace(" ", "")
+
+        if "Integer.MIN_VALUE-" or "-2147483648-" in formatted_str:
+            return True
+        else:
+            return False
+
+
+# Generation of Error Message Containing Sensitive Information
+class CWE209:
+    def __init__(self):
+        self.id = "CWE-209"
+        self.name = "Generation of Error Message Containing Sensitive Information"
+        self.description = (
+            "The product generates an error message that includes sensitive information about its environment, users, or associated data.")
+        self.severity = "Low"
+        self.url = "https://cwe.mitre.org/data/definitions/209.html"
+        self.remediation_advice = "When an exception is caught, only print insensitive and desired data to a user."
+
+    @staticmethod
+    def scan(line_str):
+        if "catch" in line_str and "Exception e" in line_str:
+            if "System.out.println(e)" in line_str or "e.printStackTrace()" in line_str:
+                return True
+
+        return False
