@@ -232,30 +232,59 @@ def main():
 
             # Create CWE Objects
             cwe89_obj = getattr(cwe_vulnerabilities, "CWE89")
-            cwe259_obj = getattr(cwe_vulnerabilities, "CWE259")
-            cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
-            cwe321_obj = getattr(cwe_vulnerabilities, "CWE321")
-            cwe326_obj = getattr(cwe_vulnerabilities, "CWE326")
-            cwe585_obj = getattr(cwe_vulnerabilities, "CWE585")
             cwe111_obj = getattr(cwe_vulnerabilities, "CWE111")
             cwe190_obj = getattr(cwe_vulnerabilities, "CWE190")
             cwe191_obj = getattr(cwe_vulnerabilities, "CWE191")
+            cwe209_obj = getattr(cwe_vulnerabilities, "CWE209")
+            cwe259_obj = getattr(cwe_vulnerabilities, "CWE259")
+            cwe321_obj = getattr(cwe_vulnerabilities, "CWE321")
+            cwe326_obj = getattr(cwe_vulnerabilities, "CWE326")
+            cwe382_obj = getattr(cwe_vulnerabilities, "CWE382")
+            cwe395_obj = getattr(cwe_vulnerabilities, "CWE395")
+            cwe396_obj = getattr(cwe_vulnerabilities, "CWE396")
+            cwe397_obj = getattr(cwe_vulnerabilities, "CWE397")
+            cwe481_obj = getattr(cwe_vulnerabilities, "CWE481")
+            cwe491_obj = getattr(cwe_vulnerabilities, "CWE491")
+            cwe493_obj = getattr(cwe_vulnerabilities, "CWE493")
+            cwe500_obj = getattr(cwe_vulnerabilities, "CWE500")
+            cwe572_obj = getattr(cwe_vulnerabilities, "CWE572")
+            cwe582_obj = getattr(cwe_vulnerabilities, "CWE582")
+            cwe583_obj = getattr(cwe_vulnerabilities, "CWE583")
+            cwe585_obj = getattr(cwe_vulnerabilities, "CWE585")
+            cwe586_obj = getattr(cwe_vulnerabilities, "CWE586")
+            cwe595_obj = getattr(cwe_vulnerabilities, "CWE595")
+            cwe766_obj = getattr(cwe_vulnerabilities, "CWE766")
+            cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
 
             # For each line of source code, run vulnerability scan
             for line in lines:
                 line_number += 1
 
                 if line:
-                    sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)  # SQL injection scan
-                    sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)  # Hard coded password scan
-                    sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)  # Hard coded credentials scan
-                    sec.find_vulnerability(line, cwe321_obj, sast_dict_list,
-                                           line_number)  # Hard-coded Cryptographic Key scan
-                    sec.find_vulnerability(line, cwe326_obj, sast_dict_list, line_number)  # Weak Cryptographic Key scan
-                    sec.find_vulnerability(line, cwe585_obj, sast_dict_list, line_number)  # Empty Synchronisation Scan
-                    sec.find_vulnerability(line, cwe111_obj, sast_dict_list, line_number)  # JNI Call Scan
-                    sec.find_vulnerability(line, cwe190_obj, sast_dict_list, line_number)  # Integer Overflow Scan
-                    sec.find_vulnerability(line, cwe191_obj, sast_dict_list, line_number)  # Integer Underflow Scan
+                    sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe111_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe190_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe191_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe209_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe321_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe326_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe382_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe395_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe396_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe397_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe481_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe491_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe493_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe500_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe572_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe582_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe583_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe585_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe586_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe595_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe766_obj, sast_dict_list, line_number)
+                    sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)
 
             vuln_index = 0
 

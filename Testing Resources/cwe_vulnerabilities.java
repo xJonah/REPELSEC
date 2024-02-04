@@ -1,8 +1,3 @@
-import java.sql.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 public class cwe_vulnerabilities {
 
     // Hard-coded credentials (CWE-798) & hard-coded password (CWE-259)
@@ -27,7 +22,7 @@ public class cwe_vulnerabilities {
             Statement stmt = conn.createStatement();
             String query = String.format("SELECT * FROM Users where email=%s AND password=%s", user_email, user_password);
             ResultSet result = stmt.executeQuery(query);
-
+        }
         // CWE-209: Generation of Error Message Containing Sensitive Information
         catch (SQLException e) { System.out.println(e) }
 
@@ -36,7 +31,7 @@ public class cwe_vulnerabilities {
           File myObj = new File("C:/Users/Jonah/Documents/GitHub/REPELSEC/repelsec/config/weak_token.txt");
           Scanner myReader = new Scanner(myObj);
           if (myReader.hasNextLine()) {
-            String token = myReader.nextLine();
+            String key = myReader.nextLine();
           }
           myReader.close();
         } catch (FileNotFoundException e) {
@@ -51,7 +46,13 @@ public class cwe_vulnerabilities {
         int over = 2147483647 + 5;
         int under = Integer.MIN_VALUE - 5;
 
+        // J2EE Bad Practices: Direct Use of Sockets (CWE-246)
+        Socket sock = null;
 
+        // J2EE Bad Practices: Use of System.exit() (CWE-382)
+        if (somethingHappens) {
+            System.exit(-1);
+        }
 
 
     }
