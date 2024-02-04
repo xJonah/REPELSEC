@@ -2,6 +2,6 @@
 
 To Do:
 
-- Implement more CWE checks - https://cwe.mitre.org/data/definitions/660.html
-- Make results output look professional
-- Example of CSV results connecting to Power BI dashboard?
+- Improve CWE Scans where possible
+- Create testing materials
+- Make results output look detailed and nice
