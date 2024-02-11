@@ -34,7 +34,7 @@ def main():
     # Set output path for result exports
     if args.output_path is None:
         # output_path = os.getcwd()
-        output_path = os.path.join(os.getcwd(), "repelsec/results")
+        output_path = os.path.join(os.getcwd(), "repelsec/results")  # For TESTING
     else:
         output_path = args.output_path
 
@@ -142,8 +142,8 @@ def main():
                     if not args.encrypt:
 
                         # Print results to terminal
-                        print(
-                            f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vulnerability_number}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                        print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vulnerability_number}  ~~~~~~~~~~~~~~~"
+                              f"~~~~~~~~~~~~~~")
                         print(f"ID - {cve_id}")
                         print(f"Artifact - {formatted_artifact}")
                         print(f"Group - {group}")
@@ -216,7 +216,7 @@ def main():
                 sec.add_pdf_password(pdf_path, encrypted_path, args.encrypt)
 
     # SAST Scan
-    elif ".java" in filename:
+    elif ".java" in filename or ".jsp" in filename:
 
         # Define initial Scan Result and Score
         scan_score = 100
@@ -256,10 +256,11 @@ def main():
             cwe766_obj = getattr(cwe_vulnerabilities, "CWE766")
             cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
 
-            # For each line of source code, run vulnerability scan
+            # For each line of source code
             for line in lines:
                 line_number += 1
 
+                # If line is not null, run vulnerability scan
                 if line:
                     sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)
                     sec.find_vulnerability(line, cwe111_obj, sast_dict_list, line_number)

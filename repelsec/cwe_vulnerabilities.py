@@ -1,7 +1,34 @@
 import re
 
 
-# MITRE CWE Classes
+# MITRE CWE Classes:
+
+# CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
+# CWE-111: Direct Use of Unsafe JNI
+# CWE-190: Integer Overflow or Wraparound
+# CWE-191: Integer Underflow (Wrap or Wraparound)
+# CWE-209: Generation of Error Message Containing Sensitive Information
+# CWE-246: J2EE Bad Practices: Direct Use of Sockets
+# CWE-259: Use of Hard-coded Password
+# CWE-321: Use of Hard-coded Cryptographic Key
+# CWE-326: Inadequate Encryption Strength
+# CWE-382: J2EE Bad Practices: Use of System.exit()
+# CWE-395: Use of NullPointerException Catch to Detect NULL Pointer Dereference
+# CWE-396: Declaration of Catch for Generic Exception
+# CWE-397: Declaration of Throws for Generic Exception
+# CWE-481: Assigning instead of Comparing
+# CWE-491: Public cloneable() Method Without Final ('Object Hijack')
+# CWE-493: Critical Public Variable Without Final Modifier
+# CWE-500: Public Static Field Not Marked Final
+# CWE-572: Call to Thread run() instead of start()
+# CWE-582: Array Declared Public, Final, and Static
+# CWE-583: finalize() Method Declared Public
+# CWE-585: Empty Synchronized Block
+# CWE-586: Explicit Call to Finalize()
+# CWE-595: Comparison of Object References Instead of Object Contents
+# CWE-766: Critical Data Element Declared Public
+# CWE-798: Use of Hard-coded Credentials
+
 
 class CWE89:
     def __init__(self):

@@ -2,6 +2,5 @@
 
 To Do:
 
-- Improve CWE Scans where possible
-- Create testing materials
-- Make results output look detailed and nice
+- Create testing materials and measure effectiveness
+- Make PDF look nice

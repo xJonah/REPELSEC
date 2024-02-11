@@ -1,3 +1,2 @@
 Verademo - https://github.com/veracode/verademo - pom.xml
 Juvulna - https://github.com/edu-secmachine/javulna/tree/master - pom2.xml
-cwe_vulnerabilities - me

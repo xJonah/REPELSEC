@@ -13,9 +13,10 @@ def is_valid_path(parser, arg):
 
 # Function to find correct version string for dependency
 def find_version(version, springboot_version, properties_dict):
-    # Find correct area of pom.xml to read from
+    # If no version defined, use springboot version
     if version is None:
         version_found = springboot_version
+    # If version is variable
     elif version.startswith("$"):
         property_version = version[version.find("{") + 1:version.find("}")]
         version_found = properties_dict.get(property_version)
@@ -82,6 +83,7 @@ def is_valid_password(parser, x):
             "and a digit")
 
 
+# Function to password-protect PDF report if argument enabled
 def add_pdf_password(temp_path, output_path, password):
     with open(temp_path, "rb") as f:
         pdf_reader = PyPDF2.PdfReader(f)
