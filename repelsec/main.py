@@ -42,7 +42,7 @@ def main():
     filename = os.path.basename(args.filename)
 
     # SCA SCAN
-    if filename == "pom.xml":
+    if "pom.xml" in filename:
 
         # Open supplied file
         with open(args.filename, "r") as f:
