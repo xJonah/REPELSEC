@@ -11,12 +11,12 @@ def is_valid_path(parser, arg):
         return arg
 
 
-# Function to find correct version string for dependency
+# Function to find correct version string for dependencies
 def find_version(version, springboot_version, properties_dict):
-    # If no version defined, use springboot version
+    # If no version defined for dependency, use springboot version
     if version is None:
         version_found = springboot_version
-    # If version is variable
+    # If dependency version is variable, get version from properties section
     elif version.startswith("$"):
         property_version = version[version.find("{") + 1:version.find("}")]
         version_found = properties_dict.get(property_version)

@@ -47,7 +47,7 @@ class CWE89:
 
     @staticmethod
     def scan(line_str):
-        if "Statement" in line_str and "PreparedStatement" not in line_str:
+        if "Statement" in line_str and "PreparedStatement" not in line_str and "prepareStatement" not in line_str:
             return True
         else:
             return False
@@ -91,9 +91,10 @@ class CWE190:
 
     @staticmethod
     def scan(line_str):
-        formatted_str = line_str.replace(" ", "")
 
-        if "Integer.MAX_VALUE+" or "2147483647+" in formatted_str:
+        pattern_found = re.findall(pattern=r"int(. *) = Integer.MAX_VALUE \+", string=line_str)
+
+        if pattern_found:
             return True
         else:
             return False
@@ -113,9 +114,10 @@ class CWE191:
 
     @staticmethod
     def scan(line_str):
-        formatted_str = line_str.replace(" ", "")
 
-        if "Integer.MIN_VALUE-" or "-2147483648-" in formatted_str:
+        pattern_found = re.findall(pattern=r"int(. *) = Integer.MIN_VALUE \-", string=line_str)
+
+        if pattern_found:
             return True
         else:
             return False
@@ -223,7 +225,7 @@ class CWE326:
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
         pattern_found = re.findall(
-            pattern=r'newFile\("([^"]*)\/([^"]*)(token|key|secret|auth|encryption_key|encryption)([^"]*)"\)',
+            pattern=r'newFile\("(.*?(?:token|key|secret|auth|encryption_key|encryption).*?)"\)',
             string=formatted_str, flags=re.IGNORECASE)
 
         if pattern_found:
@@ -308,7 +310,7 @@ class CWE396:
     @staticmethod
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
-        if "catch(Exception e)" in formatted_str:
+        if "catch(Exception" in formatted_str:
             return True
         else:
             return False
@@ -384,7 +386,7 @@ class CWE493:
     @staticmethod
     def scan(line_str):
         pattern_found = re.findall(
-            pattern=r"public (byte|short|long|double|String|float|int|char|boolean|BigDecimal) (price|path);",
+            pattern=r"public (byte|short|long|double|String|float|int|char|boolean|BigDecimal) (price|path)",
             string=line_str)
 
         if pattern_found:
@@ -487,9 +489,8 @@ class CWE585:
     @staticmethod
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
-        pattern_found = re.findall(pattern=r"synchronized(this){}", string=formatted_str)
 
-        if pattern_found:
+        if "synchronized(this){}" in formatted_str:
             return True
         else:
             return False
@@ -545,8 +546,8 @@ class CWE766:
     @staticmethod
     def scan(line_str):
         pattern_found = re.findall(
-            pattern=r"public (byte|short|long|double|String|float|int|char|boolean|BigDecimal) (username|password);",
-            string=line_str)
+            pattern=r"public (static|) (final|) (byte|short|long|double|String|float|int|char|boolean|BigDecimal) (username|password)",
+            string=line_str, flags=re.IGNORECASE)
 
         if pattern_found:
             return True

@@ -223,113 +223,119 @@ def main():
         scan_result = "Pass"
 
         # Open supplied file
-        with open(args.filename, "r") as f:
-            lines = f.readlines()
-            line_number = 0
+        # with open(args.filename, "r") as f:
+        #    lines = f.read.splitlines()
 
-            # Empty list created to store dictionaries of results
-            sast_dict_list = []
+        lines = [line.rstrip() for line in open(args.filename)]
+        line_number = 0
 
-            # Create CWE Objects
-            cwe89_obj = getattr(cwe_vulnerabilities, "CWE89")
-            cwe111_obj = getattr(cwe_vulnerabilities, "CWE111")
-            cwe190_obj = getattr(cwe_vulnerabilities, "CWE190")
-            cwe191_obj = getattr(cwe_vulnerabilities, "CWE191")
-            cwe209_obj = getattr(cwe_vulnerabilities, "CWE209")
-            cwe259_obj = getattr(cwe_vulnerabilities, "CWE259")
-            cwe321_obj = getattr(cwe_vulnerabilities, "CWE321")
-            cwe326_obj = getattr(cwe_vulnerabilities, "CWE326")
-            cwe382_obj = getattr(cwe_vulnerabilities, "CWE382")
-            cwe395_obj = getattr(cwe_vulnerabilities, "CWE395")
-            cwe396_obj = getattr(cwe_vulnerabilities, "CWE396")
-            cwe397_obj = getattr(cwe_vulnerabilities, "CWE397")
-            cwe481_obj = getattr(cwe_vulnerabilities, "CWE481")
-            cwe491_obj = getattr(cwe_vulnerabilities, "CWE491")
-            cwe493_obj = getattr(cwe_vulnerabilities, "CWE493")
-            cwe500_obj = getattr(cwe_vulnerabilities, "CWE500")
-            cwe572_obj = getattr(cwe_vulnerabilities, "CWE572")
-            cwe582_obj = getattr(cwe_vulnerabilities, "CWE582")
-            cwe583_obj = getattr(cwe_vulnerabilities, "CWE583")
-            cwe585_obj = getattr(cwe_vulnerabilities, "CWE585")
-            cwe586_obj = getattr(cwe_vulnerabilities, "CWE586")
-            cwe595_obj = getattr(cwe_vulnerabilities, "CWE595")
-            cwe766_obj = getattr(cwe_vulnerabilities, "CWE766")
-            cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
+        # Empty list created to store dictionaries of results
+        sast_dict_list = []
 
-            # For each line of source code
-            for line in lines:
-                line_number += 1
+        # Create CWE Objects
+        cwe89_obj = getattr(cwe_vulnerabilities, "CWE89")
+        cwe111_obj = getattr(cwe_vulnerabilities, "CWE111")
+        cwe190_obj = getattr(cwe_vulnerabilities, "CWE190")
+        cwe191_obj = getattr(cwe_vulnerabilities, "CWE191")
+        cwe209_obj = getattr(cwe_vulnerabilities, "CWE209")
+        cwe246_obj = getattr(cwe_vulnerabilities, "CWE246")
+        cwe259_obj = getattr(cwe_vulnerabilities, "CWE259")
+        cwe321_obj = getattr(cwe_vulnerabilities, "CWE321")
+        cwe326_obj = getattr(cwe_vulnerabilities, "CWE326")
+        cwe382_obj = getattr(cwe_vulnerabilities, "CWE382")
+        cwe395_obj = getattr(cwe_vulnerabilities, "CWE395")
+        cwe396_obj = getattr(cwe_vulnerabilities, "CWE396")
+        cwe397_obj = getattr(cwe_vulnerabilities, "CWE397")
+        cwe481_obj = getattr(cwe_vulnerabilities, "CWE481")
+        cwe491_obj = getattr(cwe_vulnerabilities, "CWE491")
+        cwe493_obj = getattr(cwe_vulnerabilities, "CWE493")
+        cwe500_obj = getattr(cwe_vulnerabilities, "CWE500")
+        cwe572_obj = getattr(cwe_vulnerabilities, "CWE572")
+        cwe582_obj = getattr(cwe_vulnerabilities, "CWE582")
+        cwe583_obj = getattr(cwe_vulnerabilities, "CWE583")
+        cwe585_obj = getattr(cwe_vulnerabilities, "CWE585")
+        cwe586_obj = getattr(cwe_vulnerabilities, "CWE586")
+        cwe595_obj = getattr(cwe_vulnerabilities, "CWE595")
+        cwe766_obj = getattr(cwe_vulnerabilities, "CWE766")
+        cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
 
-                # If line is not null, run vulnerability scan
-                if line:
-                    sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe111_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe190_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe191_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe209_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe321_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe326_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe382_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe395_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe396_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe397_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe481_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe491_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe493_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe500_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe572_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe582_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe583_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe585_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe586_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe595_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe766_obj, sast_dict_list, line_number)
-                    sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)
+        # For each line of source code
+        for line in lines:
+            line_number += 1
 
-            vuln_index = 0
+            formatted_line = line.replace(" ", "")
 
-            # Scan fails if high or critical vulnerabilities present
-            for vuln in sast_dict_list:
-                severity = vuln.get("Severity")
+            # If line is not null, whitespace, or a comment
+            if line and not line.isspace() and not formatted_line.startswith("//"):
+                sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe111_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe190_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe191_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe209_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe246_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe321_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe326_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe382_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe395_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe396_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe397_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe481_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe491_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe493_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe500_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe572_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe582_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe583_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe585_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe586_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe595_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe766_obj, sast_dict_list, line_number)
+                sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)
 
-                if severity == "Critical" or severity == "High":
-                    scan_result = "Fail"
+        vuln_index = 0
 
-                scan_score = sec.modify_scan_score(scan_score, severity)
+        # Scan fails if high or critical vulnerabilities present
+        for vuln in sast_dict_list:
+            severity = vuln.get("Severity")
 
-            # Merge additional values into Dictionary
-            for sast_dict in sast_dict_list:
-                sast_dict |= {
-                    "Scan Result": scan_result,
-                    "Scan Score": scan_score,
-                    "Module": filename,
-                }
+            if severity == "Critical" or severity == "High":
+                scan_result = "Fail"
 
-                vuln_index += 1
+            scan_score = sec.modify_scan_score(scan_score, severity)
 
-                if not args.encrypt:
-                    # Print results to terminal
-                    print(
-                        f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                    print(f"ID - {sast_dict.get('ID')}")
-                    print(f"Name - {sast_dict.get('Name')}")
-                    print(f"Description - {sast_dict.get('Description')}")
-                    print(f"Severity - {sast_dict.get('Severity')}")
-                    print(f"URL - {sast_dict.get('URL')}")
-                    print(f"Remediation Advice - {sast_dict.get('Remediation Advice')}")
-                    print(f"Module - {sast_dict.get('Module')}")
-                    print(f"Line Number - {sast_dict.get('Line Number')}")
-                    print("\n")
-                else:
-                    print(f"{vuln_index} vulnerabilities found - ENCRYPTION MODE ENABLED")
-                    print("\n")
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            print(f"Scan Result - {scan_result}")
-            print(f"Scan Score - {scan_score}")
-            if args.txt or args.pdf or args.csv:
-                print(f"Results saved to {output_path}")
-            print("\n")
+        # Merge additional values into Dictionary
+        for sast_dict in sast_dict_list:
+            sast_dict |= {
+                "Scan Result": scan_result,
+                "Scan Score": scan_score,
+                "Module": filename,
+            }
+
+            vuln_index += 1
+
+            if not args.encrypt:
+                # Print results to terminal
+                print(
+                    f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print(f"ID - {sast_dict.get('ID')}")
+                print(f"Name - {sast_dict.get('Name')}")
+                print(f"Description - {sast_dict.get('Description')}")
+                print(f"Severity - {sast_dict.get('Severity')}")
+                print(f"URL - {sast_dict.get('URL')}")
+                print(f"Remediation Advice - {sast_dict.get('Remediation Advice')}")
+                print(f"Module - {sast_dict.get('Module')}")
+                print(f"Line Number - {sast_dict.get('Line Number')}")
+                print("\n")
+            else:
+                print(f"{vuln_index} vulnerabilities found - ENCRYPTION MODE ENABLED")
+                print("\n")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(f"Scan Result - {scan_result}")
+        print(f"Scan Score - {scan_score}")
+        if args.txt or args.pdf or args.csv:
+            print(f"Results saved to {output_path}")
+        print("\n")
 
         # If csv argument is enabled, print SAST results to a csv file
         if args.csv:
