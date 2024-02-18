@@ -79,9 +79,19 @@ public class secure {
 
             PreparedStatement stmt;
             stmt = con.prepareStatement(SELECT * FROM Users where email=? AND password=?);
-            stmt.setString(1, user_email);
-            stmt.setString(2, user_password);
-            ResultSet result = stmt.executeQuery();
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
+
+            Pattern emailPattern = Pattern.compile(emailRegex);
+            Matcher emailMatcher = emailPattern.matcher(user_email);
+            Pattern passwordPattern = Pattern.compile(passwordRegex);
+            Matcher passwordMatcher = passwordPattern.matcher(user_password);
+
+            if (emailMatcher.matches() && passwordMatcher.matches()) {
+                stmt.setString(1, user_email);
+                stmt.setString(2, user_password);
+                ResultSet result = stmt.executeQuery();
+            }
         }
         // CWE-209: Generation of Error Message Containing Sensitive Information
         // Mitigation - print custom error message for user

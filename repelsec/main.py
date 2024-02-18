@@ -109,7 +109,7 @@ def main():
                     current_date_object = datetime.now()
                     current_date = current_date_object.strftime("%d/%m/%Y")
                     cve_references = [x.url for x in cve.references]
-                    cve_references_str = ", ".join(cve_references)
+                    # cve_references_str = ", ".join(cve_references)
                     formatted_artifact = f"{artifact} {version}"
                     vulnerability_number += 1
 
@@ -132,7 +132,7 @@ def main():
                         "Remediation Advice": remediation_action,
                         "Discovery Date": published_date,  # Date NVD published CVE
                         "Scan Date": current_date,  # Date of REPELSEC scan
-                        "CVE References": cve_references_str,
+                        # "CVE References": cve_references_str,
                         "NVD URL": cve_url,  # NIST CVE URL
                     }
 
@@ -153,7 +153,7 @@ def main():
                         print(f"Remediation Advice - {remediation_action}")
                         print(f"Discovery Date - {published_date}")
                         print(f"Scan Date - {current_date}")
-                        print(f"CVE References - {cve_references_str}")
+                        # print(f"CVE References - {cve_references_str}")
                         print(f"NVD URL - {cve_url}")
                         print("\n")
                     else:
@@ -197,7 +197,7 @@ def main():
                     f.write(f"Remediation Advice - {vuln.get('Remediation Advice')}\n")
                     f.write(f"Discovery Date - {vuln.get('Discovery Date')}\n")
                     f.write(f"Scan Date - {vuln.get('Scan Date')}\n")
-                    f.write(f"CVE References - {vuln.get('CVE References')}\n")
+                    # f.write(f"CVE References - {vuln.get('CVE References')}\n")
                     f.write(f"NVD URL - {vuln.get('NVD URL')}\n")
                     f.write("\n")
                 f.write(f"Scan Result - {scan_result}\n")
@@ -207,12 +207,12 @@ def main():
         # If pdf argument is enabled, print SCA results to a PDF file
         if args.pdf:
             pdf = PDF()
-            pdf_path = os.path.join(output_path, "sast.pdf")
+            pdf_path = os.path.join(output_path, "sca.pdf")
             pdf.create_pdf("SCA", sca_dict_list)
             pdf.output(pdf_path, 'F')
 
             if args.encrypt:
-                encrypted_path = os.path.join(output_path, "e_sast.pdf")
+                encrypted_path = os.path.join(output_path, "e_sca.pdf")
                 sec.add_pdf_password(pdf_path, encrypted_path, args.encrypt)
 
     # SAST Scan

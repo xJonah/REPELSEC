@@ -56,16 +56,16 @@ def find_vulnerability(line_str, vuln_object, sast_dict_list, line_number):
 def modify_scan_score(score, severity):
     if score <= 0:
         return 0
-    elif score > 0 and severity == "Low":
+    elif severity == "Low":
         return score - 1
-    elif score > 1 and severity == "Medium":
+    elif severity == "Medium":
         return score - 2
-    elif score > 4 and severity == "High":
+    elif severity == "High":
         return score - 5
-    elif score > 9 and severity == "Critical":
+    elif severity == "Critical":
         return score - 10
     else:
-        raise Exception("Unexpected score/severity value")
+        raise Exception("Unexpected severity value")
 
 
 # Check for valid password encryption

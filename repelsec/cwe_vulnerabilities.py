@@ -39,11 +39,10 @@ class CWE89:
             "upstream component, but it does not neutralize or incorrectly neutralizes special elements that "
             "could modify the intended SQL command when it is sent to a downstream component")
         self.severity = "Critical"
-        self.url = ("https://cwe.mitre.org/data/definitions/89.html, "
-                    "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html")
+        self.url = "https://cwe.mitre.org/data/definitions/89.html"
         self.remediation_advice = ("Prepared statements, client and server side input validation, safe stored "
                                    "procedures, or escaping user input can be used to mitigate against SQL injection "
-                                   "attacks. Refer to OWASP cheat sheet for examples.")
+                                   "attacks.")
 
     @staticmethod
     def scan(line_str):
