@@ -1,0 +1,10 @@
+Priority:
+
+- CWE Tests
+- Testing resources (3rd party code?)
+
+
+Non-priority:
+
+- Fancy ReadMe appearance
+- Fancy result appearance
