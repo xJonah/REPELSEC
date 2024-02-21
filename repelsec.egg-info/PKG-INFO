@@ -1,9 +1,45 @@
 Metadata-Version: 2.1
 Name: repelsec
-Version: 0.1
+Version: 0.2
+Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: nvdlib~=0.7.5
 Requires-Dist: xmltodict~=0.13.0
 Requires-Dist: pandas~=2.1.1
 Requires-Dist: argparse~=1.4.0
 Requires-Dist: setuptools~=69.0.2
+Requires-Dist: repelsec~=0.1
+Requires-Dist: fpdf~=1.7.2
+Requires-Dist: PyPDF2~=3.0.1
+
+# REPELSEC
+
+## About the tool
+
+A command-line tool allowing developers to find security vulnerabilities within a Java project. This is done through:
+
+- A series of static analysis (SAST) tests that can be run against any first party code (.java, .jsp) to identify
+  potential CWE vulnerabilities.
+- Software composition analysis (SCA) that identifies any outdated dependencies within the pom.xml file and their
+  associated
+  CVE vulnerabilities.
+
+## Installation
+
+If your system has Python installed, open your preferred terminal and enter the following command.
+
+`pip install repelsec`
+
+## Usage
+
+Open a terminal within your IDE and enter the following command.
+
+`repelsec [parameters] path/filename`
+
+Available parameters and their usage can be seen by entering the following command in the terminal.
+
+`repelsec --help`
+
+## Example
+
+`repelsec -p -e StrongPassword123?! -o ~/Documents/Results pom.xml`

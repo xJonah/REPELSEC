@@ -6,5 +6,11 @@ Priority:
 
 Non-priority:
 
-- Fancy ReadMe appearance
-- Fancy result appearance
+- ReadMe Improvements
+- Result output improvements
+
+
+Commands:
+
+python setup.py sdist bdist_wheel
+twine upload dist/*

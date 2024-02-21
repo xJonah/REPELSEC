@@ -2,19 +2,21 @@
 
 ## About the tool
 
-A command-line tool allowing developers to find security vulnerabilities within a Java project.
+A command-line tool allowing developers to find security vulnerabilities within a Java project. This is done through:
 
-Software composition analysis (SCA) identifies any outdated dependencies within the pom.xml file and their associated
-CVE vulnerabilities.
-
-A variety of static analysis (SAST) tests can be run to identify CWE vulnerabilities within first-party code and
-remediation advice.
+- A series of static analysis (SAST) tests that can be run against any first party code (.java, .jsp) to identify
+  potential CWE vulnerabilities.
+- Software composition analysis (SCA) that identifies any outdated dependencies within the pom.xml file and their
+  associated
+  CVE vulnerabilities.
 
 ## Installation
 
-If your system has Python and PIP installed, open your preferred terminal and enter the following command.
+If your system has Python installed, open your preferred terminal and enter the following command.
 
 `pip install repelsec`
+
+PyPi Package - https://pypi.org/project/repelsec
 
 ## Usage
 
@@ -22,10 +24,10 @@ Open a terminal within your IDE and enter the following command.
 
 `repelsec [parameters] path/filename`
 
-Available parameters and a simple description can be found by entering the following command in the terminal.
+Available parameters and their usage can be seen by entering the following command in the terminal.
 
 `repelsec --help`
 
-## Examples
+## Example
 
 `repelsec -p -e StrongPassword123?! -o ~/Documents/Results pom.xml`

@@ -1,3 +1,5 @@
 /repelsec/config/nvd_key.txt
 /repelsec/config/temp.py
 /venv/
+/.idea/
+.pypirc
