@@ -11,6 +11,7 @@ Requires-Dist: setuptools~=69.0.2
 Requires-Dist: repelsec~=0.1
 Requires-Dist: fpdf~=1.7.2
 Requires-Dist: PyPDF2~=3.0.1
+Requires-Dist: requests~=2.31.0
 
 # REPELSEC
 
@@ -29,6 +30,8 @@ A command-line tool allowing developers to find security vulnerabilities within 
 If your system has Python installed, open your preferred terminal and enter the following command.
 
 `pip install repelsec`
+
+PyPi Package - https://pypi.org/project/repelsec
 
 ## Usage
 
