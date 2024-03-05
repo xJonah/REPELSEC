@@ -3,6 +3,7 @@ import json
 import os
 import nvdlib
 import pandas as pd
+import requests.exceptions
 import xmltodict
 from repelsec import functions as sec
 from argparse import ArgumentParser, Namespace
@@ -23,7 +24,8 @@ def main():
     parser.add_argument("-c", "--csv", help="Export results to a csv file", action="store_true")
     parser.add_argument("-p", "--pdf", help="Export results to a pdf file", action="store_true")
     parser.add_argument("-t", "--txt", help="Export results to a txt file", action="store_true")
-    parser.add_argument("-e", "--encrypt", help="Enable encryption mode and password protect PDF report",
+    parser.add_argument("-b", "--blank", help="Results are not printed to terminal", action="store_true")
+    parser.add_argument("-e", "--password", help="Encrypt/Password protect PDF report",
                         type=lambda x: sec.is_valid_password(parser, x))
     parser.add_argument("-o", "--output_path", help="Output to chosen directory",
                         type=lambda x: sec.is_valid_path(parser, x))
@@ -68,12 +70,11 @@ def main():
         # Define empty list to store dictionaries of results
         sca_dict_list = []
 
+        vuln_index = 0
+
         # Define NVD API Key (if desired)
         # with open("repelsec/config/nvd_key.txt", "r") as f:
         #    nvd_key = f.readline()
-
-        # Define loop counter
-        vulnerability_number = 0
 
         # Iterates through pom.xml dependencies
         for dependency in dependencies:
@@ -91,9 +92,14 @@ def main():
             if cpe is not None:
                 # Define CPE with Artifact version
                 formatted_cpe = cpe.replace("*", version, 1)
+                cve_list = []
 
-                # Search NVD database for CVEs assigned to the CPE
-                cve_list = nvdlib.searchCVE(cpeName=formatted_cpe, limit=100)
+                try:
+                    # Search NVD database for CVEs assigned to the CPE
+                    cve_list = nvdlib.searchCVE(cpeName=formatted_cpe, limit=100)
+
+                except requests.exceptions.HTTPError:
+                    print("NVD API cannot be reached at the moment. Please try again later.")
 
                 # Extract and define desired scan & CVE attributes
                 for cve in cve_list:
@@ -111,10 +117,12 @@ def main():
                     # cve_references = [x.url for x in cve.references]
                     # cve_references_str = ", ".join(cve_references)
                     formatted_artifact = f"{artifact} {version}"
-                    vulnerability_number += 1
 
                     # Modify security score
                     scan_score = sec.modify_scan_score(scan_score, severity)
+
+                    # Get recommended time to remediate
+                    remediation_days = sec.get_remediation_days(severity)
 
                     # Modify scan result. If scan contains a critical or high risk vulnerability, the scan does not
                     # meet policy and fails.
@@ -134,15 +142,18 @@ def main():
                         "Scan Date": current_date,  # Date of REPELSEC scan
                         # "CVE References": cve_references_str,
                         "NVD URL": cve_url,  # NIST CVE URL
+                        "Days To Remediate": remediation_days,
                     }
 
                     # Append temp dictionary to main dictionary
                     sca_dict_list.append(sca_temp_dict)
 
-                    if not args.encrypt:
+                    vuln_index += 1
+
+                    if not args.blank:
 
                         # Print results to terminal
-                        print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vulnerability_number}  ~~~~~~~~~~~~~~~"
+                        print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~"
                               f"~~~~~~~~~~~~~~")
                         print(f"ID - {cve_id}")
                         print(f"Artifact - {formatted_artifact}")
@@ -155,9 +166,10 @@ def main():
                         print(f"Scan Date - {current_date}")
                         # print(f"CVE References - {cve_references_str}")
                         print(f"NVD URL - {cve_url}")
+                        print(f"Days To Remediate - {remediation_days}")
                         print("\n")
                     else:
-                        print(f"{vulnerability_number} vulnerabilities found - ENCRYPTION MODE ENABLED")
+                        print(f"{vuln_index} vulnerabilities found - BLANK MODE ENABLED")
                         print("\n")
         print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print(f"Security Result - {scan_result}")
@@ -181,11 +193,7 @@ def main():
         # If txt argument is enabled, write SCA results to a txt file
         if args.txt:
             with open(os.path.join(output_path, "sca.txt"), "w") as f:
-                vuln_index = 0
-
-                for vuln in sca_dict_list:
-                    vuln_index += 1
-
+                for vuln_index, vuln in enumerate(sca_dict_list, start=1):
                     f.write(
                         f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
                     f.write(f"ID - {vuln.get('ID')}\n")
@@ -199,6 +207,7 @@ def main():
                     f.write(f"Scan Date - {vuln.get('Scan Date')}\n")
                     # f.write(f"CVE References - {vuln.get('CVE References')}\n")
                     f.write(f"NVD URL - {vuln.get('NVD URL')}\n")
+                    f.write(f"Days To Remediate - {vuln.get('Days To Remediate')}")
                     f.write("\n")
                 f.write(f"Scan Result - {scan_result}\n")
                 f.write(f"Security Score - {scan_score}\n")
@@ -211,9 +220,9 @@ def main():
             pdf.create_pdf("SCA", sca_dict_list)
             pdf.output(pdf_path, 'F')
 
-            if args.encrypt:
+            if args.password:
                 encrypted_path = os.path.join(output_path, "e_sca.pdf")
-                sec.add_pdf_password(pdf_path, encrypted_path, args.encrypt)
+                sec.add_pdf_password(pdf_path, encrypted_path, args.password)
 
     # SAST Scan
     elif ".java" in filename or ".jsp" in filename:
@@ -226,8 +235,8 @@ def main():
         # with open(args.filename, "r") as f:
         #    lines = f.read.splitlines()
 
+        # Remove trailing whitespace from lines
         lines = [line.rstrip() for line in open(args.filename)]
-        line_number = 0
 
         # Empty list created to store dictionaries of results
         sast_dict_list = []
@@ -260,8 +269,7 @@ def main():
         cwe798_obj = getattr(cwe_vulnerabilities, "CWE798")
 
         # For each line of source code
-        for line in lines:
-            line_number += 1
+        for line_number, line in enumerate(lines, start=1):
 
             formatted_line = line.replace(" ", "")
 
@@ -293,8 +301,6 @@ def main():
                 sec.find_vulnerability(line, cwe766_obj, sast_dict_list, line_number)
                 sec.find_vulnerability(line, cwe798_obj, sast_dict_list, line_number)
 
-        vuln_index = 0
-
         # Scan fails if high or critical vulnerabilities present
         for vuln in sast_dict_list:
             severity = vuln.get("Severity")
@@ -304,17 +310,17 @@ def main():
 
             scan_score = sec.modify_scan_score(scan_score, severity)
 
-        # Merge additional values into Dictionary
-        for sast_dict in sast_dict_list:
+        # Loop through SAST vulnerabilities
+        for vuln_index, sast_dict in enumerate(sast_dict_list, start=1):
+
+            # Merge additional data to dictionary
             sast_dict |= {
                 "Scan Result": scan_result,
                 "Scan Score": scan_score,
                 "Module": filename,
             }
 
-            vuln_index += 1
-
-            if not args.encrypt:
+            if not args.blank:
                 # Print results to terminal
                 print(
                     f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -326,9 +332,10 @@ def main():
                 print(f"Remediation Advice - {sast_dict.get('Remediation Advice')}")
                 print(f"Module - {sast_dict.get('Module')}")
                 print(f"Line Number - {sast_dict.get('Line Number')}")
+                print(f"Days To Remediate = {sast_dict.get('Days To Remediate')}")
                 print("\n")
             else:
-                print(f"{vuln_index} vulnerabilities found - ENCRYPTION MODE ENABLED")
+                print(f"{vuln_index} vulnerabilities found - BLANK MODE ENABLED")
                 print("\n")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  RESULT  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print(f"Scan Result - {scan_result}")
@@ -345,11 +352,7 @@ def main():
         # If txt argument is enabled, print SCA results to a txt file
         if args.txt:
             with open(os.path.join(output_path, "sast.txt"), "w") as f:
-                vuln_index = 0
-
-                for vuln in sast_dict_list:
-                    vuln_index += 1
-
+                for vuln_index, vuln in enumerate(sast_dict_list, start=1):
                     f.write(
                         f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY {vuln_index}  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
                     f.write(f"ID - {vuln.get('ID')}\n")
@@ -360,6 +363,7 @@ def main():
                     f.write(f"Remediation Advice - {vuln.get('Remediation Advice')}\n")
                     f.write(f"Module - {vuln.get('Module')}\n")
                     f.write(f"Line Number - {vuln.get('Line Number')}\n")
+                    f.write(f"Days To Remediate - {vuln.get('Days To Remediate')}")
                     f.write("\n")
                 f.write(f"Scan Result - {scan_result}\n")
                 f.write(f"Scan Score - {scan_score}\n")
@@ -372,6 +376,6 @@ def main():
             pdf.create_pdf("SAST", sast_dict_list)
             pdf.output(pdf_path, 'F')
 
-            if args.encrypt:
+            if args.password:
                 encrypted_path = os.path.join(output_path, "e_sast.pdf")
-                sec.add_pdf_password(pdf_path, encrypted_path, args.encrypt)
+                sec.add_pdf_password(pdf_path, encrypted_path, args.password)

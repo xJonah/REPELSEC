@@ -43,6 +43,7 @@ class CWE89:
         self.remediation_advice = ("Prepared statements, client and server side input validation, safe stored "
                                    "procedures, or escaping user input can be used to mitigate against SQL injection "
                                    "attacks.")
+        self.remediation_days = 15
 
     @staticmethod
     def scan(line_str):
@@ -64,6 +65,7 @@ class CWE111:
         self.url = "https://cwe.mitre.org/data/definitions/111.html"
         self.remediation_advice = ("Implement error handling around JNI call; do not use JNI calls if native "
                                    "library is not trusted; use Java API equivalents if they exist")
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -87,6 +89,7 @@ class CWE190:
         self.url = "https://cwe.mitre.org/data/definitions/190.html"
         self.remediation_advice = ("Implement exception handling; use another data type such as Long or "
                                    "BigInteger if performing operations close to the maximum of an Integer")
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -110,6 +113,7 @@ class CWE191:
         self.url = "https://cwe.mitre.org/data/definitions/191.html"
         self.remediation_advice = ("Implement exception handling; use another data type such as Long or "
                                    "BigInteger if performing operations close to the minimum of an Integer")
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -131,6 +135,7 @@ class CWE209:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/209.html"
         self.remediation_advice = "When an exception is caught, only print insensitive and desired data to a user."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -149,6 +154,7 @@ class CWE246:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/246.html"
         self.remediation_advice = "Use framework method calls instead of using sockets directly."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -171,6 +177,7 @@ class CWE259:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/259.html"
         self.remediation_advice = "Passwords should be hashed and stored safely in a password-protected external file"
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -194,6 +201,7 @@ class CWE321:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/321.html"
         self.remediation_advice = "Cryptographic keys should be stored safely in a password-protected external file"
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -219,6 +227,7 @@ class CWE326:
         self.remediation_advice = ("Use trusted libraries/APIs that create encryption keys using best practices "
                                    "or define long, complex strings with a variety of letters, digits, upper and "
                                    "lowercase, and special characters.")
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -263,6 +272,7 @@ class CWE382:
         self.remediation_advice = ("Shutdown function should be a privileged function only available to an authorised "
                                    "administrative user. Web applications should not call System.exit() as it can "
                                    "cause the virtual machine to exit.")
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -286,6 +296,7 @@ class CWE395:
         self.remediation_advice = (
             "Do not extensively rely on catching exceptions (especially for validating user input) to handle errors. "
             "Handling exceptions can decrease the performance of an application.")
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -305,6 +316,7 @@ class CWE396:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/396.html"
         self.remediation_advice = "Define specific exceptions and use multiple catch blocks if necessary."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -324,6 +336,7 @@ class CWE397:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/397.html"
         self.remediation_advice = "Define the specific exceptions that should be thrown."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -341,6 +354,7 @@ class CWE481:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/481.html"
         self.remediation_advice = "Check operator used is correct. For example == is used for comparison and = is used for assignment."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -362,6 +376,7 @@ class CWE491:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/491.html"
         self.remediation_advice = "Make the cloneable() method final."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -381,6 +396,7 @@ class CWE493:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/493.html"
         self.remediation_advice = "Declare all public fields as final when possible, especially if it is used to maintain internal state of an Applet or of classes used by an Applet. If a field must be public, then perform all appropriate sanity checks before accessing the field from your code."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -402,6 +418,7 @@ class CWE500:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/500.html"
         self.remediation_advice = "Clearly identify the scope for all critical data elements, including whether they should be regarded as static. Make any static fields private and constant."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -423,6 +440,7 @@ class CWE572:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/572.html"
         self.remediation_advice = "Use the start() method instead of the run() method."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -443,6 +461,7 @@ class CWE582:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/582.html"
         self.remediation_advice = "The array should be made private."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -463,6 +482,7 @@ class CWE583:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/583.html"
         self.remediation_advice = "If you are using finalize() as it was designed, there is no reason to declare finalize() with anything other than protected access."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -484,6 +504,7 @@ class CWE585:
         self.url = "https://cwe.mitre.org/data/definitions/585.html"
         self.remediation_advice = ("Remove empty synchronised block or define procedures that access or modify data "
                                    "that is exposed to multiple threads")
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -503,6 +524,7 @@ class CWE586:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/586.html"
         self.remediation_advice = "Do not make explicit calls to finalize()."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -520,6 +542,7 @@ class CWE595:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/595.html"
         self.remediation_advice = "The equals() method should be used used to compare objects instead of =="
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -541,6 +564,7 @@ class CWE766:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/766.html"
         self.remediation_advice = "Data should be private, static, and final whenever possible. This will assure that your code is protected by instantiating early, preventing access, and preventing tampering."
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
@@ -564,6 +588,7 @@ class CWE798:
         self.severity = "Low"
         self.url = "https://cwe.mitre.org/data/definitions/798.html"
         self.remediation_advice = "Credentials should be hashed and stored safely in a password-protected external file"
+        self.remediation_days = 120
 
     @staticmethod
     def scan(line_str):
