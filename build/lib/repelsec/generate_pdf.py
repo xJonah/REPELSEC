@@ -85,6 +85,7 @@ class PDF(FPDF):
             self.multi_cell(0, 5, f"Scan Date - {vuln.get('Scan Date')}")
             self.multi_cell(0, 5, f"Resources - {vuln.get('CVE References')}")
             self.multi_cell(0, 5, f"NVD Link - {vuln.get('NVD URL')}")
+            self.multi_cell(0, 5, f"Days To Remediate - {vuln.get('Days To Remediate')}")
             self.ln(10)
 
     def sast_vulnerabilities(self, vuln_list):
@@ -102,6 +103,7 @@ class PDF(FPDF):
             self.multi_cell(0, 5, f"Severity - {vuln.get('Severity')}")
             self.multi_cell(0, 5, f"Resources - {vuln.get('URL')}")
             self.multi_cell(0, 5, f"Remediation Advice - {vuln.get('Remediation Advice')}")
+            self.multi_cell(0, 5, f"Days To Remediate - {vuln.get('Days To Remediate')}")
             self.ln(10)
 
             if index % 4 == 0:

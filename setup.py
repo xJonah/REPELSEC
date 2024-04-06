@@ -14,7 +14,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="repelsec",
-    version="0.2",
+    version="0.3",
     packages=find_packages(),
     include_package_data=True,
     install_requires=read_requirements(),

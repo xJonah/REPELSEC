@@ -1,5 +1,6 @@
 import os
 import re
+
 import PyPDF2
 
 
@@ -46,6 +47,7 @@ def find_vulnerability(line_str, vuln_object, sast_dict_list, line_number):
             "URL": obj.url,
             "Remediation Advice": obj.remediation_advice,
             "Line Number": line_number,
+            "Days To Remediate": obj.remediation_days
         }
         sast_dict_list.append(vulnerability_dict)
 
@@ -54,18 +56,32 @@ def find_vulnerability(line_str, vuln_object, sast_dict_list, line_number):
 
 # Function to measure security score
 def modify_scan_score(score, severity):
-    if score <= 0:
-        return 0
-    elif severity == "Low":
-        return score - 1
-    elif severity == "Medium":
-        return score - 2
-    elif severity == "High":
-        return score - 5
-    elif severity == "Critical":
-        return score - 10
-    else:
-        raise Exception("Unexpected severity value")
+    match severity:
+        case "Low":
+            return max(score - 1, 0)
+        case "Medium":
+            return max(score - 2, 0)
+        case "High":
+            return max(score - 5, 0)
+        case "Critical":
+            return max(score - 10, 0)
+        case _:
+            raise Exception("Unexpected severity value")
+
+
+# Function to return NIST recommended days to remediate
+def get_remediation_days(severity):
+    match severity:
+        case "Low":
+            return 120
+        case "Medium":
+            return 90
+        case "High":
+            return 30
+        case "Critical":
+            return 15
+        case _:
+            raise Exception("Unexpected severity value")
 
 
 # Check for valid password encryption
@@ -98,3 +114,24 @@ def add_pdf_password(temp_path, output_path, password):
             pdf_writer.write(output_f)
 
     os.remove(temp_path)
+
+
+def is_strong_token(token):
+    # Check the length of the token
+    length_score = min(len(token) / 16.0, 1.0)
+
+    # Check the complexity of characters (lowercase, uppercase, digits, symbols)
+    lowercase = any(c.islower() for c in token)
+    uppercase = any(c.isupper() for c in token)
+    digits = any(c.isdigit() for c in token)
+    symbols = bool(re.search(r'[!@#$%^&*(),.?":{}|<>]', token))
+
+    complexity_score = sum([lowercase, uppercase, digits, symbols]) / 4.0
+
+    # Combine scores and provide an overall strength assessment
+    total_score = (length_score + complexity_score) / 2.0
+
+    if total_score >= 0.75:
+        return False
+    else:
+        return True

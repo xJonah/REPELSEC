@@ -6,6 +6,7 @@ repelsec/cwe_vulnerabilities.py
 repelsec/functions.py
 repelsec/generate_pdf.py
 repelsec/main.py
+repelsec/tests.py
 repelsec.egg-info/PKG-INFO
 repelsec.egg-info/SOURCES.txt
 repelsec.egg-info/dependency_links.txt
