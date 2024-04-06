@@ -1,5 +1,6 @@
 import os
 import re
+
 import PyPDF2
 
 
@@ -113,3 +114,24 @@ def add_pdf_password(temp_path, output_path, password):
             pdf_writer.write(output_f)
 
     os.remove(temp_path)
+
+
+def is_strong_token(token):
+    # Check the length of the token
+    length_score = min(len(token) / 16.0, 1.0)
+
+    # Check the complexity of characters (lowercase, uppercase, digits, symbols)
+    lowercase = any(c.islower() for c in token)
+    uppercase = any(c.isupper() for c in token)
+    digits = any(c.isdigit() for c in token)
+    symbols = bool(re.search(r'[!@#$%^&*(),.?":{}|<>]', token))
+
+    complexity_score = sum([lowercase, uppercase, digits, symbols]) / 4.0
+
+    # Combine scores and provide an overall strength assessment
+    total_score = (length_score + complexity_score) / 2.0
+
+    if total_score >= 0.75:
+        return False
+    else:
+        return True

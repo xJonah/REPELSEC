@@ -1,14 +1,16 @@
 # Imports
 import json
 import os
+from argparse import ArgumentParser, Namespace
+from datetime import datetime
+
 import nvdlib
 import pandas as pd
 import requests.exceptions
 import xmltodict
-from repelsec import functions as sec
-from argparse import ArgumentParser, Namespace
-from datetime import datetime
+
 from repelsec import cwe_vulnerabilities
+from repelsec import functions as sec
 from repelsec.generate_pdf import PDF
 
 
@@ -244,8 +246,8 @@ def main():
         # Create CWE Objects
         cwe89_obj = getattr(cwe_vulnerabilities, "CWE89")
         cwe111_obj = getattr(cwe_vulnerabilities, "CWE111")
-        cwe190_obj = getattr(cwe_vulnerabilities, "CWE190")
-        cwe191_obj = getattr(cwe_vulnerabilities, "CWE191")
+        # cwe190_obj = getattr(cwe_vulnerabilities, "CWE190")
+        # cwe191_obj = getattr(cwe_vulnerabilities, "CWE191")
         cwe209_obj = getattr(cwe_vulnerabilities, "CWE209")
         cwe246_obj = getattr(cwe_vulnerabilities, "CWE246")
         cwe259_obj = getattr(cwe_vulnerabilities, "CWE259")
@@ -277,8 +279,8 @@ def main():
             if line and not line.isspace() and not formatted_line.startswith("//"):
                 sec.find_vulnerability(line, cwe89_obj, sast_dict_list, line_number)
                 sec.find_vulnerability(line, cwe111_obj, sast_dict_list, line_number)
-                sec.find_vulnerability(line, cwe190_obj, sast_dict_list, line_number)
-                sec.find_vulnerability(line, cwe191_obj, sast_dict_list, line_number)
+                # sec.find_vulnerability(line, cwe190_obj, sast_dict_list, line_number)
+                # sec.find_vulnerability(line, cwe191_obj, sast_dict_list, line_number)
                 sec.find_vulnerability(line, cwe209_obj, sast_dict_list, line_number)
                 sec.find_vulnerability(line, cwe246_obj, sast_dict_list, line_number)
                 sec.find_vulnerability(line, cwe259_obj, sast_dict_list, line_number)
