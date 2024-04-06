@@ -1,5 +1,7 @@
 import re
 
+from functions import is_strong_token
+
 
 # MITRE CWE Classes:
 
@@ -94,7 +96,7 @@ class CWE190:
     @staticmethod
     def scan(line_str):
 
-        pattern_found = re.findall(pattern=r"int(. *) = Integer.MAX_VALUE \+", string=line_str)
+        pattern_found = re.findall(pattern=r"int (. *) = Integer.MAX_VALUE \+", string=line_str)
 
         if pattern_found:
             return True
@@ -242,24 +244,7 @@ class CWE326:
             with open(path, "r") as f:
                 token = f.readline()
 
-            # Check the length of the token
-            length_score = min(len(token) / 16.0, 1.0)
-
-            # Check the complexity of characters (lowercase, uppercase, digits, symbols)
-            lowercase = any(c.islower() for c in token)
-            uppercase = any(c.isupper() for c in token)
-            digits = any(c.isdigit() for c in token)
-            symbols = bool(re.search(r'[!@#$%^&*(),.?":{}|<>]', token))
-
-            complexity_score = sum([lowercase, uppercase, digits, symbols]) / 4.0
-
-            # Combine scores and provide an overall strength assessment
-            total_score = (length_score + complexity_score) / 2.0
-
-            if total_score >= 0.75:
-                return False
-            else:
-                return True
+                return is_strong_token(token)
 
 
 class CWE382:
@@ -277,7 +262,7 @@ class CWE382:
     @staticmethod
     def scan(line_str):
 
-        pattern_found = re.findall(pattern=r"System.exit\([-101]\);", string=line_str)
+        pattern_found = re.findall(pattern=r"System.exit\((-1|0|1)\);", string=line_str)
 
         if pattern_found:
             return True
@@ -401,7 +386,7 @@ class CWE493:
     @staticmethod
     def scan(line_str):
         pattern_found = re.findall(
-            pattern=r"public (byte|short|long|double|String|float|int|char|boolean|BigDecimal) (price|path)",
+            pattern=r"public (byte|short|long|double|String|float|int|char|boolean|BigDecimal) (price|path|balance)",
             string=line_str)
 
         if pattern_found:
@@ -486,7 +471,7 @@ class CWE583:
 
     @staticmethod
     def scan(line_str):
-        if "public void finalize()" in line_str:
+        if "public void finalize()" in line_str or "private void finalize()" in line_str:
             return True
         else:
             return False
@@ -528,7 +513,7 @@ class CWE586:
 
     @staticmethod
     def scan(line_str):
-        if ".finalize()" in line_str:
+        if ".finalize()" in line_str and "this.finalize()" not in line_str:
             return True
         else:
             return False
@@ -569,7 +554,7 @@ class CWE766:
     @staticmethod
     def scan(line_str):
         pattern_found = re.findall(
-            pattern=r"public (static|) (final|) (byte|short|long|double|String|float|int|char|boolean|BigDecimal) (username|password)",
+            pattern=r"public(static |final | )(byte|short|long|double|String|float|int|char|boolean|BigDecimal) (username|password)",
             string=line_str, flags=re.IGNORECASE)
 
         if pattern_found:
@@ -593,7 +578,7 @@ class CWE798:
     @staticmethod
     def scan(line_str):
         formatted_str = line_str.replace(" ", "")
-        pattern_found = re.findall(pattern=r"username=[\"']|uname=[\"']|id=[\"']|username=[\"']", string=formatted_str,
+        pattern_found = re.findall(pattern=r"username=[\"']|uname=[\"']|id=[\"']|user=[\"']", string=formatted_str,
                                    flags=re.IGNORECASE)
 
         if pattern_found:
