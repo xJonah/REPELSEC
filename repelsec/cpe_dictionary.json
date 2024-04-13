@@ -1,7 +1,7 @@
 {
-  "spring-boot-starter-web": "cpe:2.3:a:vmware:spring_framework:*:*:*:*:*:*:*:*",
+  "spring-boot-starter-web": "cpe:2.3:a:vmware:spring_boot:*:*:*:*:*:*:*:*",
   "spring-boot-starter-data-jpa": null,
-  "spring-boot-starter-security": "cpe:2.3:a:vmware:spring_security:*:*:*:*:*:*:*:*",
+  "spring-boot-starter-security": null,
   "spring-boot-starter-websocket": null,
   "spring-boot-starter-validation": null,
   "spring-boot-devtools": null,
