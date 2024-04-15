@@ -1,6 +1,6 @@
 import re
 
-from functions import is_strong_token
+from repelsec.functions import is_strong_token
 
 
 # MITRE CWE Classes:

@@ -3,6 +3,7 @@ import json
 import os
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
+from time import time
 
 import nvdlib
 import pandas as pd
@@ -47,6 +48,8 @@ def main():
 
     # SCA SCAN
     if "pom.xml" in filename:
+
+        start_time = time()
 
         # Open supplied file
         with open(args.filename, "r") as f:
@@ -219,15 +222,20 @@ def main():
         if args.pdf:
             pdf = PDF()
             pdf_path = os.path.join(output_path, "sca.pdf")
-            pdf.create_pdf("SCA", sca_dict_list)
+            pdf.create_pdf("SCA", sca_dict_list, scan_score)
             pdf.output(pdf_path, 'F')
 
             if args.password:
                 encrypted_path = os.path.join(output_path, "e_sca.pdf")
                 sec.add_pdf_password(pdf_path, encrypted_path, args.password)
 
+        end_time = time()
+        print(f"SCA Scan time {round((end_time - start_time), 4)} Seconds")
+
     # SAST Scan
     elif ".java" in filename or ".jsp" in filename:
+
+        start_time = time()
 
         # Define initial Scan Result and Score
         scan_score = 100
@@ -375,9 +383,12 @@ def main():
         if args.pdf:
             pdf = PDF()
             pdf_path = os.path.join(output_path, "sast.pdf")
-            pdf.create_pdf("SAST", sast_dict_list)
+            pdf.create_pdf("SAST", sast_dict_list, scan_score)
             pdf.output(pdf_path, 'F')
 
             if args.password:
                 encrypted_path = os.path.join(output_path, "e_sast.pdf")
                 sec.add_pdf_password(pdf_path, encrypted_path, args.password)
+
+        end_time = time()
+        print(f"SAST Scan time {round((end_time - start_time), 4)} Seconds")
