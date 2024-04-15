@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: repelsec
-Version: 0.4
+Version: 0.5
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: nvdlib~=0.7.5
@@ -27,15 +27,22 @@ A command-line tool allowing developers to find security vulnerabilities within 
 
 ## Installation
 
-If your system has Python installed, open your preferred terminal or IDE and enter the following command.
+Pre-requisites - Python/PIP installed and added to PATH. Python 3.12 installed through the Microsoft Store is
+recommended.
 
-`python -m pip install repelsec`
+To install REPELSEC, follow the below instructions.
 
-`pip install repelsec`
+1. Run `python -m pip install repelsec` / `pip install repelsec` within your preferred terminal.
+2. Note the path repelsec.exe was installed to. For example, C:
+   \Users\Jonah\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts_
+3. Within Windows Search open "Edit the system environment variables"
+4. Press "Environment Variables"
+5. Under "System Variables", select "Path", and click "Edit"
+6. Select an empty slot within the Path variable and paste in the path repelsec.exe was installed to.
 
 To keep this tool up to date, run the following command on a scheduled basis.
 
-`pip install repelsec --upgrade`
+`python -m pip install repelsec --upgrade` / `pip install repelsec --upgrade`
 
 PyPi Package - https://pypi.org/project/repelsec
 
@@ -68,8 +75,6 @@ This information can also be viewed locally using the following command.
 
 - CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
 - CWE-111: Direct Use of Unsafe JNI
-- CWE-190: Integer Overflow or Wraparound
-- CWE-191: Integer Underflow (Wrap or Wraparound)
 - CWE-209: Generation of Error Message Containing Sensitive Information
 - CWE-246: J2EE Bad Practices: Direct Use of Sockets
 - CWE-259: Use of Hard-coded Password
