@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: repelsec
-Version: 0.3
+Version: 0.4
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: nvdlib~=0.7.5
@@ -27,7 +27,9 @@ A command-line tool allowing developers to find security vulnerabilities within 
 
 ## Installation
 
-If your system has Python installed, open your preferred terminal and enter the following command.
+If your system has Python installed, open your preferred terminal or IDE and enter the following command.
+
+`python -m pip install repelsec`
 
 `pip install repelsec`
 

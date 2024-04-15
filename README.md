@@ -12,13 +12,16 @@ A command-line tool allowing developers to find security vulnerabilities within 
 
 ## Installation
 
-If your system has Python installed, open your preferred terminal or IDE and enter the following command.
+If your system has Python/PIP installed and added to PATH, open your preferred terminal or IDE and enter the
+following command.
 
 `python -m pip install repelsec`
 
 `pip install repelsec`
 
 To keep this tool up to date, run the following command on a scheduled basis.
+
+`python -m pip install repelsec --upgrade`
 
 `pip install repelsec --upgrade`
 

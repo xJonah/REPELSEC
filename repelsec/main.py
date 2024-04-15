@@ -38,8 +38,8 @@ def main():
 
     # Set output path for result exports
     if args.output_path is None:
-        # output_path = os.getcwd()
-        output_path = os.path.join(os.getcwd(), "repelsec/results")  # For TESTING
+        output_path = os.getcwd()
+        # output_path = os.path.join(os.getcwd(), "repelsec/results")  # For TESTING
     else:
         output_path = args.output_path
 
