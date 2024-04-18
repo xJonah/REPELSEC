@@ -553,7 +553,7 @@ class CWE766:
     @staticmethod
     def scan(line_str):
         pattern_found = re.findall(
-            pattern=r"public(static |final | )(byte|short|long|double|String|float|int|char|boolean|BigDecimal) (username|password)",
+            pattern=r"public (.*) (username|password|email|isAuthenticated|jwtSecret)",
             string=line_str, flags=re.IGNORECASE)
 
         if pattern_found:
