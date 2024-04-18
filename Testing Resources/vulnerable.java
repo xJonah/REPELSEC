@@ -72,10 +72,10 @@ public class vulnerable {
         catch (SQLException e) { System.out.println(e); }
 
         // CWE-190: Integer Overflow or Wraparound
-        int over = Integer.MAX_VALUE + 5;
+        // int over = Integer.MAX_VALUE + 5;
 
         // CWE-190: Integer Underflow or Wraparound
-        int under = Integer.MIN_VALUE - 5;
+        // int under = Integer.MIN_VALUE - 5;
 
         // CWE-246: J2EE Bad Practices: Direct Use of Sockets
         Socket sock = null;

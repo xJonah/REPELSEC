@@ -99,11 +99,11 @@ public class secure {
 
         // CWE-190: Integer Overflow or Wraparound
         // Mitigation - Use a 64-bit data type such as Long for larger/lesser values and implement exception handling.
-        Long over = (long) Integer.MAX_VALUE + 5;
+        // Long over = (long) Integer.MAX_VALUE + 5;
 
         // CWE-190: Integer Underflow or Wraparound
         // Mitigation - Use a 64-bit data type such as Long for larger/lesser values and implement exception handling.
-        Long over = (long) Integer.MIN_VALUE + 5;
+        // Long over = (long) Integer.MIN_VALUE + 5;
 
         // CWE-246: J2EE Bad Practices: Direct Use of Sockets
         // Mitigation - Do not use null to initially create a socket connection. Use framework calls.
