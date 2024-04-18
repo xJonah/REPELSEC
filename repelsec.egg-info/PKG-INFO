@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: repelsec
-Version: 0.5
+Version: 0.6
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: nvdlib~=0.7.5

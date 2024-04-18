@@ -391,4 +391,5 @@ def main():
                 sec.add_pdf_password(pdf_path, encrypted_path, args.password)
 
         end_time = time()
-        print(f"SAST Scan time {round((end_time - start_time), 4)} Seconds")
+
+        print(f"SAST Scan time {round((end_time - start_time), 8)} Seconds")

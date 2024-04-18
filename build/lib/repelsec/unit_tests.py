@@ -1,7 +1,7 @@
 import unittest
 
-from functions import *
 from repelsec import cwe_vulnerabilities
+from repelsec.functions import *
 
 
 class TestFunctions(unittest.TestCase):

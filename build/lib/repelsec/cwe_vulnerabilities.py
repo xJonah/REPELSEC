@@ -49,7 +49,9 @@ class CWE89:
 
     @staticmethod
     def scan(line_str):
-        if "Statement" in line_str and "PreparedStatement" not in line_str and "prepareStatement" not in line_str:
+        pattern_found = re.findall(pattern=r"\b(Statement) (.*) =", string=line_str)
+
+        if pattern_found:
             return True
         else:
             return False
@@ -96,7 +98,7 @@ class CWE190:
     @staticmethod
     def scan(line_str):
 
-        pattern_found = re.findall(pattern=r"int (. *) = Integer.MAX_VALUE \+", string=line_str)
+        pattern_found = re.findall(pattern=r"int (.*) = Integer.MAX_VALUE \+", string=line_str)
 
         if pattern_found:
             return True
@@ -120,7 +122,7 @@ class CWE191:
     @staticmethod
     def scan(line_str):
 
-        pattern_found = re.findall(pattern=r"int(. *) = Integer.MIN_VALUE \-", string=line_str)
+        pattern_found = re.findall(pattern=r"int(.*) = Integer.MIN_VALUE \-", string=line_str)
 
         if pattern_found:
             return True
@@ -141,11 +143,10 @@ class CWE209:
 
     @staticmethod
     def scan(line_str):
-        if "catch" in line_str and "Exception e" in line_str:
-            if "System.out.println(e)" in line_str or "e.printStackTrace()" in line_str:
-                return True
-
-        return False
+        if "System.out.println(e)" in line_str or "e.printStackTrace()" in line_str:
+            return True
+        else:
+            return False
 
 
 class CWE246:
@@ -183,10 +184,9 @@ class CWE259:
 
     @staticmethod
     def scan(line_str):
-        formatted_str = line_str.replace(" ", "")
         pattern_found = re.findall(
-            pattern=r"password=[\"']|pwd=[\"']|passwd=[\"']|pw=[\"']|pword=[\"']|pass=[\"']|passcode=[\"']",
-            string=formatted_str, flags=re.IGNORECASE)
+            pattern=r"(password|pwd|passwd|pw|pword|pass|passcode) = [\"']([^\"']+)[\"']",
+            string=line_str, flags=re.IGNORECASE)
 
         if pattern_found:
             return True
@@ -207,10 +207,9 @@ class CWE321:
 
     @staticmethod
     def scan(line_str):
-        formatted_str = line_str.replace(" ", "")
         pattern_found = re.findall(
-            pattern=r"key=[\"']|token=[\"']|encryption_key=[\"']|auth=[\"']|secret=[\"']|encryption=[\"']",
-            string=formatted_str, flags=re.IGNORECASE)
+            pattern=r"(key|token|encryption_key|auth|secret|encryption) = [\"']([^\"']+)[\"']",
+            string=line_str, flags=re.IGNORECASE)
 
         if pattern_found:
             return True
@@ -554,7 +553,7 @@ class CWE766:
     @staticmethod
     def scan(line_str):
         pattern_found = re.findall(
-            pattern=r"public(static |final | )(byte|short|long|double|String|float|int|char|boolean|BigDecimal) (username|password)",
+            pattern=r"public (.*) (username|password|email|isAuthenticated|jwtSecret)",
             string=line_str, flags=re.IGNORECASE)
 
         if pattern_found:
@@ -577,9 +576,10 @@ class CWE798:
 
     @staticmethod
     def scan(line_str):
-        formatted_str = line_str.replace(" ", "")
-        pattern_found = re.findall(pattern=r"username=[\"']|uname=[\"']|id=[\"']|user=[\"']", string=formatted_str,
-                                   flags=re.IGNORECASE)
+        pattern_found = re.findall(
+            pattern=r"(username|uname|user|id) = [\"']([^\"']+)[\"']",
+            string=line_str,
+            flags=re.IGNORECASE)
 
         if pattern_found:
             return True
