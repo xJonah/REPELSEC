@@ -1,0 +1,4 @@
+Secure.java & vulnerable.java & sql.java - Jonah
+vera_pom - Veracode github
+user.java - Vulnado github
+juvulna_pom - juvulna github
