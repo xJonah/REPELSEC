@@ -63,7 +63,10 @@ def main():
         properties = pom_dict["project"]["properties"]
 
         # Load NVD CPE Dictionary
-        with open("repelsec/cpe_dictionary.json", "r") as f:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        json_file_path = os.path.join(script_dir, "cpe_dictionary.json")
+
+        with open(os.path.abspath(json_file_path), "r") as f:
             cpe_dict = json.load(f)
 
         # Define initial scan score (Security rating for overall scan)

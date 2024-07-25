@@ -2,6 +2,7 @@ LICENSE
 README.md
 setup.py
 repelsec/__init__.py
+repelsec/cpe_dictionary.json
 repelsec/cwe_vulnerabilities.py
 repelsec/functions.py
 repelsec/generate_pdf.py

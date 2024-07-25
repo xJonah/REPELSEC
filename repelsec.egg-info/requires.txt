@@ -1,9 +1,8 @@
-nvdlib~=0.7.5
+nvdlib~=0.7.7
 xmltodict~=0.13.0
-pandas~=2.1.1
+pandas~=2.1.4
 argparse~=1.4.0
-setuptools~=69.0.2
-repelsec~=0.1
+setuptools~=69.0.3
 fpdf~=1.7.2
 PyPDF2~=3.0.1
 requests~=2.31.0
