@@ -1,0 +1,27 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY 1  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ID - CVE-2023-44794
+Artifact - spring-boot-starter-web 3.2.4
+Group - org.springframework.boot
+Description - An issue in Dromara SaToken version 1.36.0 and before allows a remote attacker to escalate privileges via a crafted payload to the URL.
+Severity - Critical
+CVSS - 9.8
+Remediation Advice - Upgrade dependency, implement mitigation, or use secure alternative
+Discovery Date - 25/10/2023
+Scan Date - 20/04/2024
+NVD URL - https://nvd.nist.gov/vuln/detail/CVE-2023-44794
+Days To Remediate - 15
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  VULNERABILITY 2  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ID - CVE-2014-9515
+Artifact - dozer 5.5.1
+Group - net.sf.dozer
+Description - Dozer improperly uses a reflection-based approach to type conversion, which might allow remote attackers to execute arbitrary code via a crafted serialized object.
+Severity - Critical
+CVSS - 9.8
+Remediation Advice - Upgrade dependency, implement mitigation, or use secure alternative
+Discovery Date - 29/12/2017
+Scan Date - 20/04/2024
+NVD URL - https://nvd.nist.gov/vuln/detail/CVE-2014-9515
+Days To Remediate - 15
+Scan Result - Fail
+Security Score - 80
+
